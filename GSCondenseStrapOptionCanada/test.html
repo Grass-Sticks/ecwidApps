@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width='device-width', initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="test.css">
+</head>
+<body>
+    <div class="product-options">
+        <div class="option-group">
+            <h6 class="option-title">
+                <span class="required-marker"></span>
+                Strap
+            </h6>
+            
+            <div class="option-content">
+                <!-- Standard option -->
+                <div class="radio-control">
+                    <div class="radio-wrap">
+                        <input type="radio" name="strap" value="mtnStrap" id="strap-mtn">
+                        <div class="radio-indicator">
+                            <div class="radio-inner"></div>
+                        </div>
+                    </div>
+                    <label for="strap-mtn">mtnStrap</label>
+                </div>
+
+                <!-- Option with surcharge -->
+                <div class="radio-control">
+                    <div class="radio-wrap">
+                        <input type="radio" name="strap" value="salida-magic" id="strap-salida">
+                        <div class="radio-indicator">
+                            <div class="radio-inner"></div>
+                        </div>
+                    </div>
+                    <label for="strap-salida">
+                        Salida Magic
+                        <span class="surcharge">(+$19.99)</span>
+                    </label>
+                </div>
+
+                <!-- Add more options following the same pattern -->
+            </div>
+        </div>
+    </div>
+
+    <script src="test.js"></script>
+
+    <style>
+        .product-options {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px;
+        }
+
+        .option-title {
+            margin-bottom: 15px;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .required-marker::before {
+            content: '*';
+            color: red;
+            margin-right: 5px;
+        }
+
+        .radio-control {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .radio-wrap {
+            position: relative;
+            margin-right: 10px;
+        }
+
+        input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .radio-indicator {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .radio-inner {
+            display: none;
+            width: 12px;
+            height: 12px;
+            background: #2196F3;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        input[type="radio"]:checked + .radio-indicator .radio-inner {
+            display: block;
+        }
+
+        .surcharge {
+            color: #666;
+            margin-left: 5px;
+            font-size: 0.9em;
+        }
+    </style>
+</body>
+</html>

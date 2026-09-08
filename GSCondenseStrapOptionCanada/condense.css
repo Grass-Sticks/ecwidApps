@@ -1,0 +1,92 @@
+/* Main dropdown styles with proper specificity */
+.ec-size .ec-store .details-product-option--Strap .strap-dropdown-toggle {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    /* Display is controlled by JavaScript inline styles with !important */
+    display: flex; /* Default, but JavaScript will override with !important */
+    justify-content: space-between !important;
+    align-items: center !important;
+    background: #fbfbfb !important;
+    border: 1px solid rgba(135, 186, 218, 0.95) !important;
+    border-radius: 3px !important;
+    margin-bottom: 10px !important;
+    padding: 7px 7px 7px 7px !important;
+    position: relative !important;
+    color: rgba(28, 28, 28, 0.9) !important;
+    cursor: pointer !important;
+}
+
+/* Note: Display is controlled entirely by JavaScript inline styles */
+/* This prevents CSS from interfering with the visibility toggle */
+
+/* Update hover state selector */
+.ec-size .ec-store .details-product-option--Strap .strap-dropdown-toggle:hover {
+    background: white !important;
+}
+
+/* Update span selector */
+.ec-size .ec-store .details-product-option--Strap .strap-dropdown-toggle span {
+    text-align: left !important;
+    flex-grow: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+/* Strap image styling */
+.ec-size .ec-store .details-product-option--Strap .strap-dropdown-toggle .strap-dropdown-image {
+    max-height: 25px !important;
+    max-width: 400px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    padding: 2px !important;
+}
+
+/* Small size image */
+.ec-size.ec-size--s .ec-store .details-product-option--Strap .strap-dropdown-toggle .strap-dropdown-image {
+    max-height: 16px !important;
+    max-width: 200px !important;
+}
+
+/* Large size image */
+.ec-size.ec-size--l .ec-store .details-product-option--Strap .strap-dropdown-toggle .strap-dropdown-image {
+    max-height: 25px !important;
+    max-width: 400px !important;
+}
+
+/* Strap price styling */
+.ec-size .ec-store .details-product-option--Strap .strap-dropdown-toggle .strap-dropdown-price {
+    margin-left: auto !important;
+    color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Default arrow size */
+.ec-size .ec-store .details-product-option--Strap .strap-dropdown-toggle .strap-dropdown-arrow {
+    color: #6e6e6e !important;
+    width: 20px !important;
+    margin-left: auto !important;
+}
+
+.ec-size .ec-store .details-product-option--Strap .strap-dropdown-toggle .strap-dropdown-arrow svg {
+    justify-content: flex-start !important;
+}
+
+/* Small size */
+.ec-size.ec-size--s .ec-store .details-product-option--Strap .strap-dropdown-toggle .strap-dropdown-arrow {
+    width: 20px !important;
+}
+
+/* .ec-size.ec-size--s .ec-store .details-product-option--Strap .strap-dropdown-toggle .strap-dropdown-arrow svg {
+    width: 16px !important;
+} */
+
+/* Large size */
+.ec-size.ec-size--l .ec-store .details-product-option--Strap .strap-dropdown-toggle .strap-dropdown-arrow {
+    width: 25px !important;
+}
+
+/* .ec-size.ec-size--l .ec-store .details-product-option--Strap .strap-dropdown-toggle .strap-dropdown-arrow svg {
+    width: 20px !important;
+} */
