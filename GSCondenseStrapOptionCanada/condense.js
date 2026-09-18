@@ -327,11 +327,13 @@ Ecwid.OnAPILoaded.add(function() {
                     const radioButtons = optionContent.querySelectorAll('input[type="radio"][name="Strap"]');
                     
                     radioButtons.forEach(radio => {
-                        // Remove existing listeners and clone the radio button
-                        const newRadio = radio.cloneNode(true);
-                        radio.parentNode.replaceChild(newRadio, radio);
-                        
-                        newRadio.addEventListener('change', (e) => {
+                        // Attach our listener once, directly to Ecwid's own button. (The old
+                        // code copied each button to drop duplicate listeners, but a copy also
+                        // drops Ecwid's listeners, so Ecwid stopped pricing the strap.)
+                        if (radio.dataset.gsStrapListener) return;
+                        radio.dataset.gsStrapListener = '1';
+
+                        radio.addEventListener('change', (e) => {
                             console.log('Strap radio changed:', e.target.value);
                             
                             // Update dropdown UI
