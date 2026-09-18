@@ -46,12 +46,23 @@ Ecwid.OnAPILoaded.add(function() {
     styleElement.textContent = styles;
     document.head.appendChild(styleElement);
 
+    // Bumped on every page change, so a retry loop from an earlier page stops itself
+    let pageLoadCount = 0;
+    const MAX_TRIES = 20; // 20 x 500ms = give up after 10 seconds
+
     // Function to insert the button
-    function insertButton() {
+    function insertButton(loadNumber, tries) {
+        if (loadNumber !== pageLoadCount) {
+            return; // shopper has moved to another page
+        }
         const placeholder = document.querySelector('.details-product-option--Length-0028cm-or-inches0029');
         if (!placeholder) {
+            if (tries >= MAX_TRIES) {
+                console.log('Placeholder not found, giving up');
+                return;
+            }
             console.log('Placeholder not found, waiting...');
-            setTimeout(insertButton, 500);
+            setTimeout(function() { insertButton(loadNumber, tries + 1); }, 500);
             return;
         }
 
@@ -75,32 +86,19 @@ Ecwid.OnAPILoaded.add(function() {
         }
     }
 
-    // Handle page loads
+    // Handle page loads. Ecwid fires this on every page change inside the store, so no
+    // separate URL watcher is needed.
     Ecwid.OnPageLoaded.add(function(page) {
+        pageLoadCount++;
         console.log('Page type is', page.type, "!!!");
         if (page.type === 'PRODUCT') {
             console.log(page.productId);
             var productIds = [793363376, 793363171, 793364072, 793364070, 793363373, 55001151, 74102380, 506210440, 570262509, 94782479];
-  
+
             // Check if the current product ID is in the allowed list
             if (!productIds.includes(page.productId)) {return;}
-            
-            insertButton();
+
+            insertButton(pageLoadCount, 0);
         }
     });
-
-    // Handle URL changes
-    let lastUrl = location.href; 
-    const observer = new MutationObserver(() => {
-        const url = location.href;
-        if (url !== lastUrl) {
-            lastUrl = url;
-            if (url.includes('#!/')) {
-                setTimeout(insertButton, 500);
-            }
-        }
-    });
-
-    // Start observing
-    observer.observe(document, {subtree: true, childList: true});
 });
