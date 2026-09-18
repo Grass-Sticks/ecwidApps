@@ -31,7 +31,7 @@ Ecwid.OnAPILoaded.add(function() {
   
           // Update BASE_PRICES with plunger product IDs and prices
           const BASE_PRICES = {800713928: 38, 361714149: 38}; // Add plunger product IDs and base prices here
-          const CORK_PRICE = 14;
+          const CORK_PRICE = 7;
           const CURRENT = {
             [OPTION_NAMES.GRIP_COLOR]: null,
             [OPTION_NAMES.ENGRAVING]: null,
