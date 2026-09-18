@@ -1,9 +1,9 @@
-// Cloudflare settings: publish ONLY the v2 folder (the storefront code Ecwid loads).
+// Cloudflare Pages settings: publish ONLY the v2 folder (the storefront code Ecwid loads).
 // Cabot's older app folders stay on jsDelivr until they are retired.
+// Pages (not Workers) because Pages can serve apps.grasssticks.com with one CNAME record
+// in Squarespace; Workers would need the whole domain's DNS moved to Cloudflare.
 {
   "name": "grasssticks-apps",
-  "compatibility_date": "2026-09-01",
-  "assets": {
-    "directory": "./v2"
-  }
+  "pages_build_output_dir": "./v2",
+  "compatibility_date": "2026-09-01"
 }
