@@ -1,0 +1,147 @@
+/*
+ * Grass Sticks storefront add-ons (v2). Styles for grasssticks.js.
+ * !important is needed because Ecwid's own storefront styles are very specific.
+ */
+
+/* ---------- Strap dropdown ---------- */
+
+.ec-size .ec-store .details-product-option--Strap .strap-dropdown-toggle {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    background: #fbfbfb !important;
+    border: 1px solid rgba(135, 186, 218, 0.95) !important;
+    border-radius: 3px !important;
+    margin-bottom: 10px !important;
+    padding: 7px !important;
+    color: rgba(28, 28, 28, 0.9) !important;
+    font: inherit !important;
+    cursor: pointer !important;
+}
+
+.ec-size .ec-store .details-product-option--Strap .strap-dropdown-toggle:hover {
+    background: #fff !important;
+}
+
+.ec-size .ec-store .details-product-option--Strap .strap-dropdown-toggle:focus-visible {
+    outline: 2px solid rgba(135, 186, 218, 1) !important;
+    outline-offset: 2px !important;
+}
+
+.ec-size .ec-store .details-product-option--Strap .strap-dropdown-text {
+    text-align: left !important;
+    flex-grow: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.ec-size .ec-store .details-product-option--Strap .strap-dropdown-image {
+    max-height: 25px !important;
+    max-width: 400px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    padding: 2px !important;
+}
+
+.ec-size.ec-size--s .ec-store .details-product-option--Strap .strap-dropdown-image {
+    max-height: 16px !important;
+    max-width: 200px !important;
+}
+
+.ec-size .ec-store .details-product-option--Strap .strap-dropdown-price {
+    margin-left: auto !important;
+    color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.ec-size .ec-store .details-product-option--Strap .strap-dropdown-arrow {
+    color: #6e6e6e !important;
+    width: 20px !important;
+    flex-shrink: 0 !important;
+    margin-left: 10px !important;
+}
+
+.ec-size.ec-size--l .ec-store .details-product-option--Strap .strap-dropdown-arrow {
+    width: 25px !important;
+}
+
+/* ---------- Engraving ---------- */
+
+/* Ecwid draws its own hint over text boxes ("Enter your length", a store-wide setting).
+   Hide it on the engraving boxes; grasssticks.js gives them "Ski Pole 1" / "Ski Pole 2". */
+.ec-size .ec-store .details-product-option--Engraving .form-control__placeholder,
+.ec-size .ec-store .details-product-option--Engraving---Ski-Pole-2 .form-control__placeholder {
+    display: none !important;
+}
+
+/* Keep the two poles' boxes together (normal option spacing is 24px). */
+.ec-size .ec-store .details-product-option--Engraving:has(+ .details-product-option--Engraving---Ski-Pole-2) {
+    margin-bottom: 6px !important;
+}
+
+/* Live engraving price by the title. Once it's there, hide the fixed "(+$14)" label the
+   store's custom CSS adds, so there is only one price and it is the real one. */
+.ec-size .ec-store .gs-engraving-price {
+    margin-left: 6px !important;
+    color: #333 !important;
+    font-weight: 500 !important;
+}
+
+.ec-size .ec-store .details-product-option__title:has(.gs-engraving-price)::after {
+    content: none !important;
+}
+
+.ec-size .ec-store .gs-engraving-note {
+    margin-top: 4px !important;
+    font-size: 12px !important;
+    color: #6e6e6e !important;
+}
+
+/* ---------- "Click for sizing" link next to the Length title ---------- */
+
+.length-sizing-button {
+    display: inline-block !important;
+    padding: 6px 12px !important;
+    width: auto !important;
+    margin-left: 10px !important;
+    background-color: #4caf50 !important;
+    color: #fff !important;
+    border-radius: 4px !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+    text-align: center !important;
+}
+
+.length-sizing-button:hover {
+    background-color: #45a049 !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
+    transform: translateY(-1px) !important;
+}
+
+.length-sizing-button:focus-visible {
+    outline: 2px solid #2e7d32 !important;
+    outline-offset: 2px !important;
+}
+
+@media (max-width: 768px) {
+    .length-sizing-button {
+        font-size: 10px !important;
+        padding: 5px 10px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .length-sizing-button {
+        font-size: 9px !important;
+        padding: 4px 8px !important;
+    }
+}
