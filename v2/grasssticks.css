@@ -110,6 +110,19 @@
     content: none !important;
 }
 
+/* "+$1.25 per 2 letters over 6" under the title. Once it's there, hide the hand-typed
+   "Over 6 characters: ..." line the store's custom CSS adds in the same spot. */
+.ec-size .ec-store .gs-engraving-rate {
+    margin: 2px 0 6px !important;
+    font-size: 0.9em !important;
+    color: #333 !important;
+}
+
+.ec-size .ec-store .details-product-option--Engraving .product-details-module__content:has(.gs-engraving-rate)::before {
+    content: none !important;
+    display: none !important;
+}
+
 .ec-size .ec-store .gs-engraving-note {
     margin-top: 4px !important;
     font-size: 12px !important;

@@ -218,6 +218,29 @@ Ecwid.OnAPILoaded.add(function () {
             if (!title.contains(priceLabel)) title.appendChild(priceLabel);
         }
 
+        // One short line under the title explaining the extra cost, e.g. "+$1.25 per 2
+        // letters over 6". Worked out from Ecwid's own prices for the first two tiers, so it
+        // is never out of date and shows each store's currency. Replaces the hand-typed
+        // "Over 6 characters: ..." line in the store's custom CSS.
+        function amountIn(text) {
+            var amount = parseFloat(String(text).replace(/[^0-9.]/g, ''));
+            return isNaN(amount) ? null : amount;
+        }
+        var pricedTiers = tiers.filter(function (tier) { return tier.min > 0; });
+        if (pricedTiers.length > 1 && typeof Ecwid.formatCurrency === 'function') {
+            var firstPrice = amountIn(surchargeFor(pricedTiers[0].value));
+            var nextPrice = amountIn(surchargeFor(pricedTiers[1].value));
+            var lettersPerStep = pricedTiers[1].max - pricedTiers[1].min + 1;
+            var box = inputs[0].closest('.product-details-module__content');
+            if (firstPrice !== null && nextPrice > firstPrice && box && !box.querySelector('.gs-engraving-rate')) {
+                var rate = document.createElement('div');
+                rate.className = 'gs-engraving-rate';
+                rate.textContent = '+' + Ecwid.formatCurrency(Math.round((nextPrice - firstPrice) * 100) / 100) +
+                    ' per ' + lettersPerStep + ' letters over ' + pricedTiers[0].max;
+                box.insertBefore(rate, box.firstChild);
+            }
+        }
+
         var limitReached = false;
 
         function update(changedIndex) {
