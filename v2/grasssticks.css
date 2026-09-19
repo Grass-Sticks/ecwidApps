@@ -5,67 +5,84 @@
 
 /* ---------- Strap dropdown ---------- */
 
-.ec-size .ec-store .details-product-option--Strap .strap-dropdown-toggle {
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: 100% !important;
-    justify-content: space-between !important;
+/* Sized and coloured to match Ecwid's own dropdowns (Grip Color, Basket Size): 32px tall,
+   same border, background, text inset and arrow. */
+.ec-size .ec-store .details-product-option--Strap .gs-strap-toggle {
+    position: relative !important;
+    display: flex !important;
     align-items: center !important;
-    background: #fbfbfb !important;
+    width: 100% !important;
+    min-height: 32px !important;
+    margin: 0 0 8px !important;
+    padding: 3px 24px 3px 8px !important;
+    background: #fafafa !important;
     border: 1px solid rgba(135, 186, 218, 0.95) !important;
     border-radius: 3px !important;
-    margin-bottom: 10px !important;
-    padding: 7px !important;
     color: rgba(28, 28, 28, 0.9) !important;
     font: inherit !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    text-align: left !important;
     cursor: pointer !important;
+    transition: border-color 0.15s ease-out !important;
 }
 
-.ec-size .ec-store .details-product-option--Strap .strap-dropdown-toggle:hover {
-    background: #fff !important;
+.ec-size .ec-store .details-product-option--Strap .gs-strap-toggle:hover {
+    border-color: rgba(95, 155, 195, 1) !important;
 }
 
-.ec-size .ec-store .details-product-option--Strap .strap-dropdown-toggle:focus-visible {
+.ec-size .ec-store .details-product-option--Strap .gs-strap-toggle:focus-visible {
     outline: 2px solid rgba(135, 186, 218, 1) !important;
     outline-offset: 2px !important;
 }
 
-.ec-size .ec-store .details-product-option--Strap .strap-dropdown-text {
-    text-align: left !important;
-    flex-grow: 1 !important;
+.ec-size .ec-store .details-product-option--Strap .gs-strap-text {
     display: flex !important;
     align-items: center !important;
-    gap: 10px !important;
+    gap: 8px !important;
+    min-width: 0 !important;
 }
 
-.ec-size .ec-store .details-product-option--Strap .strap-dropdown-image {
-    max-height: 25px !important;
-    max-width: 400px !important;
+.ec-size .ec-store .details-product-option--Strap .gs-strap-image {
+    height: 20px !important;
     width: auto !important;
-    height: auto !important;
+    max-width: 120px !important;
     object-fit: contain !important;
-    padding: 2px !important;
-}
-
-.ec-size.ec-size--s .ec-store .details-product-option--Strap .strap-dropdown-image {
-    max-height: 16px !important;
-    max-width: 200px !important;
-}
-
-.ec-size .ec-store .details-product-option--Strap .strap-dropdown-price {
-    margin-left: auto !important;
-    color: rgba(0, 0, 0, 0.8) !important;
-}
-
-.ec-size .ec-store .details-product-option--Strap .strap-dropdown-arrow {
-    color: #6e6e6e !important;
-    width: 20px !important;
+    border-radius: 2px !important;
     flex-shrink: 0 !important;
-    margin-left: 10px !important;
 }
 
-.ec-size.ec-size--l .ec-store .details-product-option--Strap .strap-dropdown-arrow {
-    width: 25px !important;
+.ec-size .ec-store .details-product-option--Strap .gs-strap-name {
+    display: inline !important;
+    flex-grow: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Price right after the name, the way Ecwid writes "Cork (+$14)". */
+.ec-size .ec-store .details-product-option--Strap .gs-strap-price {
+    display: inline !important;
+    flex-grow: 0 !important;
+    margin-left: 0 !important;
+    white-space: nowrap !important;
+}
+
+/* Same arrow, same spot as Ecwid's: a 12px chevron centred in a 20px strip on the right.
+   It flips up while the list is open. */
+.ec-size .ec-store .details-product-option--Strap .gs-strap-arrow {
+    position: absolute !important;
+    right: 4px !important;
+    top: 50% !important;
+    width: 12px !important;
+    height: 12px !important;
+    margin-top: -6px !important;
+    color: #6e6e6e !important;
+    transition: transform 0.15s ease-out !important;
+}
+
+.ec-size .ec-store .details-product-option--Strap .gs-strap-toggle.is-open .gs-strap-arrow {
+    transform: rotate(180deg) !important;
 }
 
 /* ---------- Engraving ---------- */
@@ -102,7 +119,7 @@
 
 /* ---------- "Click for sizing" link next to the Length title ---------- */
 
-.length-sizing-button {
+.gs-sizing-button {
     display: inline-block !important;
     padding: 6px 12px !important;
     width: auto !important;
@@ -121,26 +138,26 @@
     text-align: center !important;
 }
 
-.length-sizing-button:hover {
+.gs-sizing-button:hover {
     background-color: #45a049 !important;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
     transform: translateY(-1px) !important;
 }
 
-.length-sizing-button:focus-visible {
+.gs-sizing-button:focus-visible {
     outline: 2px solid #2e7d32 !important;
     outline-offset: 2px !important;
 }
 
 @media (max-width: 768px) {
-    .length-sizing-button {
+    .gs-sizing-button {
         font-size: 10px !important;
         padding: 5px 10px !important;
     }
 }
 
 @media (max-width: 480px) {
-    .length-sizing-button {
+    .gs-sizing-button {
         font-size: 9px !important;
         padding: 4px 8px !important;
     }

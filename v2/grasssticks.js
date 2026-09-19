@@ -25,31 +25,6 @@ Ecwid.OnAPILoaded.add(function () {
     // Most characters that fit on one pole, spaces included (Andrew, 2026-09-18).
     var MAX_CHARACTERS_PER_POLE = 35;
 
-    // Pictures for the collapsed strap button. The strap list itself gets its pictures
-    // from the store's custom CSS. A strap missing here just shows its name.
-    var STRAP_IMAGES = {
-        'Salida Magic': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/11473b8440ac88cdd06789823e08511768ecac35.png',
-        'Wasatch Front': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/aaaf04823849ce69bb21158001fe2bc909ed60ad.png',
-        'Autumn': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/f2ad194c3b2b26091a5cce7ba258d4e2779b1dc7.png',
-        'Bridgers': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/f5903867c8640bb53b5aab87e5468e9099087ac3.png',
-        'Mount Tam': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/cfb0b1dcd7fa27eeeb9531cafc773f39fd53e8b2.png',
-        'Flow': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/3586dac16e7ae760735b39966514b7ac4142c629.png',
-        'Idaho 9': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/fac842e98aa70987445710d32d903a83d4e491e5.png',
-        'Dark Side': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/e5f95d4c13928f6dad040e4473e1e5ee94394c0e.png',
-        'Lone Peak': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/8f612d42e4877ec6535aadaf327636628411afcd.png',
-        'Teton': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/50b9b3081acc108626749805f63893d7228b26ad.png',
-        'The Grand': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/5b0ae3f0d2be85eb8f907c1205b0aedaef5d6084.png',
-        'Spanish Peaks': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/fc10b4558a9db9928e6dc9e5a079ea4ec230d8af.png',
-        'Mary Jane': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/1cc7def11bdedfbe45185ee299995a6e36719d43.png',
-        'Purple Haze': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/6cb063dc3114e43e8d267cda4134d1b26ce97787.png',
-        'Just Point It - Zia': 'https://v2uploads.zopim.io/3/e/F/3eFaiNrwYkfEtd5mb7bCEBxsvUWHUH4R/2fcd0c0d39c6bfd9b4389befe417ae9dbc8228a1.png',
-        'Lone 2': 'https://i.ibb.co/0yM4vrm/Lone-2.png',
-        'Sacagawea': 'https://i.ibb.co/RYML6RB/Sacagawea.png',
-        'Fixed': 'https://i.ibb.co/ZHQ6bmV/fixed.jpg',
-        'Adjustable': 'https://i.ibb.co/3Rp9vLm/adjustable.jpg',
-        'Fantasia': 'https://i.ibb.co/LhC46k9R/fantasia-Strap-Edites.png'
-    };
-
     var SELECTORS = {
         strapOption: '.details-product-option--Strap',
         engravingPole1: '.details-product-option--Engraving input',
@@ -71,12 +46,21 @@ Ecwid.OnAPILoaded.add(function () {
 
         var button = document.createElement('button');
         button.type = 'button';
-        button.className = 'strap-dropdown-toggle';
-        button.style.setProperty('display', 'none', 'important');
+        button.className = 'gs-strap-toggle';
         title.parentNode.insertBefore(button, title.nextSibling);
 
         function selectedRadio() {
             return content.querySelector('input[type="radio"][name="Strap"]:checked');
+        }
+
+        // The strap's picture is whatever the store's custom CSS shows beside it in the list,
+        // so strap pictures live in one place (Design, Custom CSS) and a new strap only needs
+        // adding there.
+        function pictureFor(radio) {
+            var row = radio.closest('.form-control');
+            if (!row) return '';
+            var match = /url\(["']?([^"')]+)["']?\)/.exec(getComputedStyle(row, '::before').backgroundImage);
+            return match ? match[1] : '';
         }
 
         function drawButton() {
@@ -84,18 +68,18 @@ Ecwid.OnAPILoaded.add(function () {
             while (button.firstChild) button.removeChild(button.firstChild);
             button.setAttribute('aria-label', radio ? 'Strap: ' + radio.value + '. Change strap' : 'Choose a strap');
             var label = document.createElement('span');
-            label.className = 'strap-dropdown-text';
+            label.className = 'gs-strap-text';
             if (radio) {
-                var imageUrl = STRAP_IMAGES[radio.value.trim()];
+                var imageUrl = pictureFor(radio);
                 if (imageUrl) {
                     var image = document.createElement('img');
-                    image.className = 'strap-dropdown-image';
+                    image.className = 'gs-strap-image';
                     image.src = imageUrl;
                     image.alt = radio.value;
                     label.appendChild(image);
                 }
                 var name = document.createElement('span');
-                name.className = 'strap-dropdown-name';
+                name.className = 'gs-strap-name';
                 name.textContent = radio.value;
                 label.appendChild(name);
                 // The surcharge text is Ecwid's own, so it is always the real price.
@@ -103,14 +87,14 @@ Ecwid.OnAPILoaded.add(function () {
                 var surcharge = row && row.querySelector('.option-surcharge__value');
                 if (surcharge) {
                     var price = document.createElement('span');
-                    price.className = 'strap-dropdown-price';
+                    price.className = 'gs-strap-price';
                     price.textContent = '(' + surcharge.textContent.trim() + ')';
                     label.appendChild(price);
                 }
             }
             button.appendChild(label);
             var arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            arrow.setAttribute('class', 'strap-dropdown-arrow');
+            arrow.setAttribute('class', 'gs-strap-arrow');
             arrow.setAttribute('width', '12');
             arrow.setAttribute('height', '12');
             arrow.setAttribute('viewBox', '0 0 12 12');
@@ -125,19 +109,17 @@ Ecwid.OnAPILoaded.add(function () {
             button.appendChild(arrow);
         }
 
+        // Works like Ecwid's own dropdowns: the button always shows the chosen strap, and
+        // clicking it opens or closes the list of strap pictures.
         function collapse() {
-            content.style.visibility = 'hidden';
-            content.style.maxHeight = '0';
-            content.style.overflow = 'hidden';
-            button.style.setProperty('display', 'flex', 'important');
+            content.style.display = 'none';
+            button.classList.remove('is-open');
             button.setAttribute('aria-expanded', 'false');
         }
 
         function expand() {
-            content.style.visibility = 'visible';
-            content.style.maxHeight = 'none';
-            content.style.overflow = 'visible';
-            button.style.setProperty('display', 'none', 'important');
+            content.style.display = '';
+            button.classList.add('is-open');
             button.setAttribute('aria-expanded', 'true');
         }
 
@@ -149,7 +131,10 @@ Ecwid.OnAPILoaded.add(function () {
                 collapse();
             }
         });
-        button.addEventListener('click', expand);
+        button.addEventListener('click', function () {
+            if (button.classList.contains('is-open')) collapse();
+            else expand();
+        });
 
         drawButton();
         expand(); // start open, like the store always has
@@ -279,9 +264,9 @@ Ecwid.OnAPILoaded.add(function () {
 
     function setupSizeButton() {
         var title = document.querySelector(SELECTORS.lengthTitle);
-        if (!title || title.querySelector('.length-sizing-button')) return;
+        if (!title || title.querySelector('.gs-sizing-button')) return;
         var link = document.createElement('a');
-        link.className = 'length-sizing-button';
+        link.className = 'gs-sizing-button';
         link.textContent = 'Click for sizing';
         link.href = SIZE_CALCULATOR_URL;
         link.target = '_blank';
