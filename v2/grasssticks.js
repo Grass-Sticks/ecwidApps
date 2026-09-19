@@ -294,6 +294,42 @@ Ecwid.OnAPILoaded.add(function () {
         title.appendChild(link);
     }
 
+    // ------------------------------------------------------------------ gift card note
+
+    // Gift cards include the recipient's shipping. When one is in the cart, say so right
+    // under the cart summary, beside the shipping charge. (Express buttons like Google Pay
+    // and PayPal skip Ecwid's shipping step, so the summary is the one place every buyer
+    // sees.) A gift card is any item with a "Gift Card Type" option, in either store.
+    var GIFT_CARD_OPTION = 'Gift Card Type';
+
+    function updateGiftCardNote() {
+        Ecwid.Cart.get(function (cart) {
+            var hasGiftCard = (cart.items || []).some(function (item) {
+                return item.options && Object.prototype.hasOwnProperty.call(item.options, GIFT_CARD_OPTION);
+            });
+            var summary = document.querySelector('.ec-cart__summary');
+            var note = document.querySelector('.gs-giftcard-note');
+            if (!hasGiftCard || !summary) {
+                if (note) note.parentNode.removeChild(note);
+                return;
+            }
+            if (note && note.previousElementSibling === summary) return;
+            if (note) note.parentNode.removeChild(note);
+            note = document.createElement('div');
+            note.className = 'gs-giftcard-note';
+            var lead = document.createElement('strong');
+            lead.textContent = 'Gift card in your cart: ';
+            note.appendChild(lead);
+            note.appendChild(document.createTextNode(
+                "this shipping charge covers your recipient's order. They'll pay nothing for shipping when they order."));
+            summary.parentNode.insertBefore(note, summary.nextSibling);
+        });
+    }
+
+    function isCartOrCheckout(page) {
+        return page.type === 'CART' || page.type.indexOf('CHECKOUT') === 0;
+    }
+
     // ------------------------------------------------------------------ page handling
 
     function setupProductPage() {
@@ -303,12 +339,22 @@ Ecwid.OnAPILoaded.add(function () {
     }
 
     var pageLoadCount = 0;
+    var onCartPage = false;
 
     Ecwid.OnPageLoaded.add(function (page) {
         pageLoadCount++;
-        if (page.type !== 'PRODUCT') return;
         var thisLoad = pageLoadCount;
         var tries = 0;
+        onCartPage = isCartOrCheckout(page);
+        if (onCartPage) {
+            (function waitForSummary() {
+                if (thisLoad !== pageLoadCount) return; // shopper moved on
+                if (document.querySelector('.ec-cart__summary')) updateGiftCardNote();
+                else if (++tries < 20) setTimeout(waitForSummary, 500);
+            })();
+            return;
+        }
+        if (page.type !== 'PRODUCT') return;
         (function waitForOptions() {
             if (thisLoad !== pageLoadCount) return; // shopper moved on
             if (document.querySelector('.product-details__product-options, .details-product-option')) {
@@ -322,5 +368,10 @@ Ecwid.OnAPILoaded.add(function () {
     // If Ecwid redraws part of the options, set up whatever is missing again.
     Ecwid.OnProductSelectedOptionsChanged.add(function () {
         setTimeout(setupProductPage, 0);
+    });
+
+    // Items added or removed on the cart page: show or hide the gift card note to match.
+    Ecwid.OnCartChanged.add(function () {
+        if (onCartPage) setTimeout(updateGiftCardNote, 300);
     });
 });
