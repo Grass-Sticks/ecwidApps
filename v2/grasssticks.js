@@ -238,11 +238,10 @@ Ecwid.OnAPILoaded.add(function () {
                 return; // the event above runs update() again with the old text
             }
             lastGood[changedIndex] = input.value;
+            // Short on purpose (Andrew): "0 of 35", "12 of 35".
             note(input, limitReached
-                ? 'Engraving is limited to ' + mostLettersPriced + ' letters in total. Contact us for more.'
-                : input.value
-                    ? input.value.length + ' of ' + MAX_CHARACTERS_PER_POLE + ' characters'
-                    : 'Up to ' + MAX_CHARACTERS_PER_POLE + ' characters');
+                ? 'Max ' + mostLettersPriced + ' letters. Contact us for more.'
+                : input.value.length + ' of ' + MAX_CHARACTERS_PER_POLE);
             limitReached = false;
             setTier(tier);
             showPrice(tier);
