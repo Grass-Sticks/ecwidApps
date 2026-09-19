@@ -68,8 +68,7 @@
     white-space: nowrap !important;
 }
 
-/* Same arrow, same spot as Ecwid's: a 12px chevron centred in a 20px strip on the right.
-   It flips up while the list is open. */
+/* Same arrow, same spot as Ecwid's: a 12px chevron centred in a 20px strip on the right. */
 .ec-size .ec-store .details-product-option--Strap .gs-strap-arrow {
     position: absolute !important;
     right: 4px !important;
@@ -78,11 +77,11 @@
     height: 12px !important;
     margin-top: -6px !important;
     color: #6e6e6e !important;
-    transition: transform 0.15s ease-out !important;
 }
 
-.ec-size .ec-store .details-product-option--Strap .gs-strap-toggle.is-open .gs-strap-arrow {
-    transform: rotate(180deg) !important;
+/* While the list is open the button is hidden, so only one strap picker shows. */
+.ec-size .ec-store .details-product-option--Strap .gs-strap-toggle.is-open {
+    display: none !important;
 }
 
 /* ---------- Engraving ---------- */

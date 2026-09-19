@@ -109,8 +109,9 @@ Ecwid.OnAPILoaded.add(function () {
             button.appendChild(arrow);
         }
 
-        // Works like Ecwid's own dropdowns: the button always shows the chosen strap, and
-        // clicking it opens or closes the list of strap pictures.
+        // Only one strap picker shows at a time (Andrew, 2026-09-18): the full list with
+        // pictures, or, once a strap is picked, the closed button. Clicking the button
+        // opens the list again (and hides the button).
         function collapse() {
             content.style.display = 'none';
             button.classList.remove('is-open');
@@ -131,10 +132,7 @@ Ecwid.OnAPILoaded.add(function () {
                 collapse();
             }
         });
-        button.addEventListener('click', function () {
-            if (button.classList.contains('is-open')) collapse();
-            else expand();
-        });
+        button.addEventListener('click', expand);
 
         drawButton();
         expand(); // start open, like the store always has
