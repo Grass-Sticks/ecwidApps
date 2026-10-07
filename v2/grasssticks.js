@@ -25,6 +25,10 @@ Ecwid.OnAPILoaded.add(function () {
     // Most characters that fit on one pole, spaces included (Andrew, 2026-09-18).
     var MAX_CHARACTERS_PER_POLE = 35;
 
+    // Counts up on every page the shopper opens. Used to tell "already set up on THIS page"
+    // from "set up on the product before this one", because Ecwid reuses the elements.
+    var pageToken = 0;
+
     var SELECTORS = {
         strapOption: '.details-product-option--Strap',
         engravingPole1: '.details-product-option--Engraving input',
@@ -36,35 +40,58 @@ Ecwid.OnAPILoaded.add(function () {
 
     // ------------------------------------------------------------------ strap dropdown
 
-    function setupStrapDropdown() {
+    // Ecwid REUSES the option elements from one product page to the next, so nothing here
+    // may assume "set up once, stays set up". Every piece looks the page up again, and the
+    // page token below decides whether this page view has been set up yet.
+    // (A stale engraving price was found live on 2026-10-07 because of this.)
+    function strapParts() {
         var option = document.querySelector(SELECTORS.strapOption);
-        if (!option) return;
+        if (!option) return null;
         var title = option.querySelector('.details-product-option__title');
         var content = option.querySelector('.product-details-module__content');
-        if (!title || !content || content.dataset.gsStrapReady) return;
-        content.dataset.gsStrapReady = '1';
+        if (!title || !content) return null;
+        return {
+            option: option,
+            title: title,
+            content: content,
+            button: option.querySelector('.gs-strap-toggle')
+        };
+    }
+
+    // The strap's picture is whatever the store's custom CSS shows beside it in the list,
+    // so strap pictures live in one place (Design, Custom CSS) and a new strap only needs
+    // adding there.
+    function pictureFor(radio) {
+        var row = radio.closest('.form-control');
+        if (!row) return '';
+        var match = /url\(["']?([^"')]+)["']?\)/.exec(getComputedStyle(row, '::before').backgroundImage);
+        return match ? match[1] : '';
+    }
+
+    function setupStrapDropdown() {
+        var parts = strapParts();
+        if (!parts) return;
+        if (parts.content.dataset.gsStrapToken === String(pageToken)) return;
+        parts.content.dataset.gsStrapToken = String(pageToken);
+
+        var leftOver = parts.option.querySelectorAll('.gs-strap-toggle');
+        for (var old = 0; old < leftOver.length; old++) {
+            leftOver[old].parentNode.removeChild(leftOver[old]);
+        }
 
         var button = document.createElement('button');
         button.type = 'button';
         button.className = 'gs-strap-toggle';
-        title.parentNode.insertBefore(button, title.nextSibling);
+        parts.title.parentNode.insertBefore(button, parts.title.nextSibling);
+        parts.button = button;
 
-        function selectedRadio() {
-            return content.querySelector('input[type="radio"][name="Strap"]:checked');
-        }
+        drawStrapButton(parts);
+        expandStrap(parts); // start open, like the store always has
+    }
 
-        // The strap's picture is whatever the store's custom CSS shows beside it in the list,
-        // so strap pictures live in one place (Design, Custom CSS) and a new strap only needs
-        // adding there.
-        function pictureFor(radio) {
-            var row = radio.closest('.form-control');
-            if (!row) return '';
-            var match = /url\(["']?([^"')]+)["']?\)/.exec(getComputedStyle(row, '::before').backgroundImage);
-            return match ? match[1] : '';
-        }
-
-        function drawButton() {
-            var radio = selectedRadio();
+    function drawStrapButton(parts) {
+            var button = parts.button;
+            var radio = parts.content.querySelector('input[type="radio"][name="Strap"]:checked');
             while (button.firstChild) button.removeChild(button.firstChild);
             button.setAttribute('aria-label', radio ? 'Strap: ' + radio.value + '. Change strap' : 'Choose a strap');
             var label = document.createElement('span');
@@ -107,35 +134,21 @@ Ecwid.OnAPILoaded.add(function () {
             path.setAttribute('stroke-linejoin', 'round');
             arrow.appendChild(path);
             button.appendChild(arrow);
-        }
+    }
 
-        // Only one strap picker shows at a time (Andrew, 2026-09-18): the full list with
-        // pictures, or, once a strap is picked, the closed button. Clicking the button
-        // opens the list again (and hides the button).
-        function collapse() {
-            content.style.display = 'none';
-            button.classList.remove('is-open');
-            button.setAttribute('aria-expanded', 'false');
-        }
+    // Only one strap picker shows at a time (Andrew, 2026-09-18): the full list with
+    // pictures, or, once a strap is picked, the closed button. Clicking the button
+    // opens the list again (and hides the button).
+    function collapseStrap(parts) {
+        parts.content.style.display = 'none';
+        parts.button.classList.remove('is-open');
+        parts.button.setAttribute('aria-expanded', 'false');
+    }
 
-        function expand() {
-            content.style.display = '';
-            button.classList.add('is-open');
-            button.setAttribute('aria-expanded', 'true');
-        }
-
-        // One listener on the list, never on (or copies of) Ecwid's buttons, so Ecwid
-        // keeps its own listeners and keeps pricing the strap.
-        content.addEventListener('change', function (event) {
-            if (event.target && event.target.name === 'Strap') {
-                drawButton();
-                collapse();
-            }
-        });
-        button.addEventListener('click', expand);
-
-        drawButton();
-        expand(); // start open, like the store always has
+    function expandStrap(parts) {
+        parts.content.style.display = '';
+        parts.button.classList.add('is-open');
+        parts.button.setAttribute('aria-expanded', 'true');
     }
 
     // ------------------------------------------------------------------ engraving
@@ -152,87 +165,129 @@ Ecwid.OnAPILoaded.add(function () {
         return tiers;
     }
 
+    // Everything about the engraving boxes on the product page being shown right now.
+    // Rebuilt on every product page, because Ecwid hands the next product the same boxes.
+    var engraving = null;
+
+    function lettersIn(text) { return text.replace(/\s/g, '').length; }
+
+    // The amount is Ecwid's own text for each choice, e.g. "9-10 (+$16.50)", so it is
+    // always the real price in the store's currency.
+    function surchargeFor(select, value) {
+        for (var i = 0; i < select.options.length; i++) {
+            if (select.options[i].value !== value) continue;
+            var match = /\(([^()]*)\)\s*$/.exec(select.options[i].text);
+            return match ? match[1] : '';
+        }
+        return '';
+    }
+
+    function amountIn(text) {
+        var amount = parseFloat(String(text).replace(/[^0-9.]/g, ''));
+        return isNaN(amount) ? null : amount;
+    }
+
+    function engravingNote(input, text) {
+        var box = input.closest('.form-control') || input.parentNode;
+        var message = box.parentNode.querySelector('.gs-engraving-note');
+        if (!message) {
+            message = document.createElement('div');
+            message.className = 'gs-engraving-note';
+            box.parentNode.insertBefore(message, box.nextSibling);
+        }
+        message.textContent = text;
+    }
+
+    function showEngravingPrice(tier) {
+        var state = engraving;
+        if (!state || !state.title) return;
+        var price = tier === '0' ? state.startingPrice : surchargeFor(state.select, tier);
+        price = price.replace(/^\+\s*/, ''); // "+$14" -> "$14" (Andrew, 2026-09-18)
+        state.priceLabel.textContent = price ? '(' + price + ')' : '';
+        if (!state.title.contains(state.priceLabel)) state.title.appendChild(state.priceLabel);
+    }
+
+    function updateEngraving(changedIndex) {
+        var state = engraving;
+        if (!state) return;
+        var input = state.inputs[changedIndex];
+        if (!input) return;
+        if (input.value.length > MAX_CHARACTERS_PER_POLE) {
+            input.value = input.value.slice(0, MAX_CHARACTERS_PER_POLE);
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            return; // the event above runs this again with the trimmed text
+        }
+        var letters = state.inputs.reduce(function (sum, box) { return sum + lettersIn(box.value); }, 0);
+        var tier = null;
+        for (var i = 0; i < state.tiers.length; i++) {
+            if (letters >= state.tiers[i].min && letters <= state.tiers[i].max) {
+                tier = state.tiers[i].value;
+                break;
+            }
+        }
+        if (tier === null) {
+            // More letters than the store has a price for: undo this keystroke/paste so
+            // the order can never carry engraving that isn't charged.
+            input.value = state.lastGood[changedIndex];
+            state.limitReached = true;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            return; // the event above runs this again with the old text
+        }
+        state.lastGood[changedIndex] = input.value;
+        // Short on purpose (Andrew): "0 of 35", "12 of 35".
+        engravingNote(input, state.limitReached
+            ? 'Max ' + state.mostLettersPriced + ' letters. Contact us for more.'
+            : input.value.length + ' of ' + MAX_CHARACTERS_PER_POLE);
+        state.limitReached = false;
+        if (state.select.value !== tier) {
+            state.select.value = tier;
+            state.select.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        showEngravingPrice(tier);
+    }
+
     function setupEngraving() {
         var select = document.querySelector(SELECTORS.engravingCount);
-        if (!select || select.dataset.gsEngravingReady) return;
+        if (!select) return;
+        if (select.dataset.gsEngravingToken === String(pageToken)) return;
         var tiers = parseTiers(select);
         if (!tiers.length) return;
-        select.dataset.gsEngravingReady = '1';
-
         var inputs = [SELECTORS.engravingPole1, SELECTORS.engravingPole2]
             .map(function (selector) { return document.querySelector(selector); })
             .filter(Boolean);
         if (!inputs.length) return;
+        select.dataset.gsEngravingToken = String(pageToken);
 
-        var mostLettersPriced = tiers.reduce(function (most, tier) { return Math.max(most, tier.max); }, 0);
-        var lastGood = inputs.map(function (input) { return input.value; });
+        // Clear anything left behind on the product page before this one.
+        var stale = document.querySelectorAll('.gs-engraving-note, .gs-engraving-rate, .gs-engraving-price');
+        for (var s = 0; s < stale.length; s++) stale[s].parentNode.removeChild(stale[s]);
 
-        function lettersIn(text) { return text.replace(/\s/g, '').length; }
-
-        function tierFor(letters) {
-            for (var i = 0; i < tiers.length; i++) {
-                if (letters >= tiers[i].min && letters <= tiers[i].max) return tiers[i].value;
-            }
-            return null;
-        }
-
-        function note(input, text) {
-            var box = input.closest('.form-control') || input.parentNode;
-            var message = box.parentNode.querySelector('.gs-engraving-note');
-            if (!message) {
-                message = document.createElement('div');
-                message.className = 'gs-engraving-note';
-                box.parentNode.insertBefore(message, box.nextSibling);
-            }
-            message.textContent = text;
-        }
-
-        function setTier(value) {
-            if (select.value === value) return;
-            select.value = value;
-            select.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-
-        // Live engraving price next to the "Engraving" title. The amount is Ecwid's own
-        // text for each choice, e.g. "9-10 (+$16.50)", so it is always the real price in
-        // the store's currency.
-        function surchargeFor(value) {
-            for (var i = 0; i < select.options.length; i++) {
-                if (select.options[i].value !== value) continue;
-                var match = /\(([^()]*)\)\s*$/.exec(select.options[i].text);
-                return match ? match[1] : '';
-            }
-            return '';
-        }
-        var cheapestTier = tiers.filter(function (tier) { return tier.min > 0; })[0];
-        var startingPrice = cheapestTier ? surchargeFor(cheapestTier.value) : '';
-        var title = document.querySelector(SELECTORS.engravingTitle);
         var priceLabel = document.createElement('span');
         priceLabel.className = 'gs-engraving-price';
+        var pricedTiers = tiers.filter(function (tier) { return tier.min > 0; });
 
-        function showPrice(tier) {
-            if (!title) return;
-            var price = tier === '0' ? startingPrice : surchargeFor(tier);
-            price = price.replace(/^\+\s*/, ''); // "+$14" -> "$14" (Andrew, 2026-09-18)
-            priceLabel.textContent = price ? '(' + price + ')' : '';
-            if (!title.contains(priceLabel)) title.appendChild(priceLabel);
-        }
+        engraving = {
+            select: select,
+            inputs: inputs,
+            tiers: tiers,
+            lastGood: inputs.map(function (input) { return input.value; }),
+            limitReached: false,
+            mostLettersPriced: tiers.reduce(function (most, tier) { return Math.max(most, tier.max); }, 0),
+            title: document.querySelector(SELECTORS.engravingTitle),
+            priceLabel: priceLabel,
+            startingPrice: pricedTiers.length ? surchargeFor(select, pricedTiers[0].value) : ''
+        };
 
         // One short line under the title explaining the extra cost, e.g. "+$1.25 per 2
         // letters over 6". Worked out from Ecwid's own prices for the first two tiers, so it
         // is never out of date and shows each store's currency. Replaces the hand-typed
         // "Over 6 characters: ..." line in the store's custom CSS.
-        function amountIn(text) {
-            var amount = parseFloat(String(text).replace(/[^0-9.]/g, ''));
-            return isNaN(amount) ? null : amount;
-        }
-        var pricedTiers = tiers.filter(function (tier) { return tier.min > 0; });
         if (pricedTiers.length > 1 && typeof Ecwid.formatCurrency === 'function') {
-            var firstPrice = amountIn(surchargeFor(pricedTiers[0].value));
-            var nextPrice = amountIn(surchargeFor(pricedTiers[1].value));
+            var firstPrice = amountIn(surchargeFor(select, pricedTiers[0].value));
+            var nextPrice = amountIn(surchargeFor(select, pricedTiers[1].value));
             var lettersPerStep = pricedTiers[1].max - pricedTiers[1].min + 1;
             var box = inputs[0].closest('.product-details-module__content');
-            if (firstPrice !== null && nextPrice > firstPrice && box && !box.querySelector('.gs-engraving-rate')) {
+            if (firstPrice !== null && nextPrice > firstPrice && box) {
                 var rate = document.createElement('div');
                 rate.className = 'gs-engraving-rate';
                 rate.textContent = '+' + Ecwid.formatCurrency(Math.round((nextPrice - firstPrice) * 100) / 100) +
@@ -241,50 +296,21 @@ Ecwid.OnAPILoaded.add(function () {
             }
         }
 
-        var limitReached = false;
-
-        function update(changedIndex) {
-            var input = inputs[changedIndex];
-            if (input.value.length > MAX_CHARACTERS_PER_POLE) {
-                input.value = input.value.slice(0, MAX_CHARACTERS_PER_POLE);
-                input.dispatchEvent(new Event('input', { bubbles: true }));
-                return; // the event above runs update() again with the trimmed text
-            }
-            var letters = inputs.reduce(function (sum, box) { return sum + lettersIn(box.value); }, 0);
-            var tier = tierFor(letters);
-            if (tier === null) {
-                // More letters than the store has a price for: undo this keystroke/paste so
-                // the order can never carry engraving that isn't charged.
-                input.value = lastGood[changedIndex];
-                limitReached = true;
-                input.dispatchEvent(new Event('input', { bubbles: true }));
-                return; // the event above runs update() again with the old text
-            }
-            lastGood[changedIndex] = input.value;
-            // Short on purpose (Andrew): "0 of 35", "12 of 35".
-            note(input, limitReached
-                ? 'Max ' + mostLettersPriced + ' letters. Contact us for more.'
-                : input.value.length + ' of ' + MAX_CHARACTERS_PER_POLE);
-            limitReached = false;
-            setTier(tier);
-            showPrice(tier);
-        }
-
         inputs.forEach(function (input, index) {
             input.maxLength = MAX_CHARACTERS_PER_POLE;
             if (inputs.length > 1) input.placeholder = 'Ski Pole ' + (index + 1);
-            input.addEventListener('input', function () { update(index); });
         });
         // Text can already be there (for example after the back button): price it now,
         // and give every box its note so nothing jumps when the shopper starts typing.
-        inputs.forEach(function (input, index) { update(index); });
+        inputs.forEach(function (input, index) { updateEngraving(index); });
     }
 
     // ------------------------------------------------------------------ size button
 
     function setupSizeButton() {
         var title = document.querySelector(SELECTORS.lengthTitle);
-        if (!title || title.querySelector('.gs-sizing-button')) return;
+        if (!title) return;
+        if (title.querySelector('.gs-sizing-button')) return; // Ecwid kept ours: leave it
         var link = document.createElement('a');
         link.className = 'gs-sizing-button';
         link.textContent = 'Click for sizing';
@@ -333,6 +359,8 @@ Ecwid.OnAPILoaded.add(function () {
     // ------------------------------------------------------------------ page handling
 
     function setupProductPage() {
+        // A product with no engraving must not inherit the last one's engraving state.
+        if (!document.querySelector(SELECTORS.engravingCount)) engraving = null;
         setupStrapDropdown();
         setupEngraving();
         setupSizeButton();
@@ -341,8 +369,36 @@ Ecwid.OnAPILoaded.add(function () {
     var pageLoadCount = 0;
     var onCartPage = false;
 
+    // Listeners live on the document, attached once, because the option elements they would
+    // otherwise be attached to are reused by Ecwid for the next product.
+    document.addEventListener('change', function (event) {
+        if (!event.target || event.target.name !== 'Strap') return;
+        var parts = strapParts();
+        if (!parts || !parts.button) return;
+        drawStrapButton(parts);
+        collapseStrap(parts);
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!event.target || !event.target.closest) return;
+        if (!event.target.closest('.gs-strap-toggle')) return;
+        var parts = strapParts();
+        if (parts && parts.button) expandStrap(parts);
+    });
+
+    document.addEventListener('input', function (event) {
+        if (!engraving || !event.target || !event.target.matches) return;
+        // Ecwid can hand the same box to a different option on the next product, so check
+        // it really is an engraving box right now, not just the one we remember.
+        if (!event.target.matches(SELECTORS.engravingPole1) &&
+            !event.target.matches(SELECTORS.engravingPole2)) return;
+        var index = engraving.inputs.indexOf(event.target);
+        if (index >= 0) updateEngraving(index);
+    });
+
     Ecwid.OnPageLoaded.add(function (page) {
         pageLoadCount++;
+        pageToken++;
         var thisLoad = pageLoadCount;
         var tries = 0;
         onCartPage = isCartOrCheckout(page);
