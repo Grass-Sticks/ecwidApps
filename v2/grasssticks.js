@@ -33,6 +33,7 @@ Ecwid.OnAPILoaded.add(function () {
         strapOption: '.details-product-option--Strap',
         engravingPole1: '.details-product-option--Engraving input',
         engravingPole2: '.details-product-option--Engraving---Ski-Pole-2 input',
+        engravingPole2Option: '.details-product-option--Engraving---Ski-Pole-2',
         engravingCount: '.details-product-option--Engraving-Count select',
         engravingTitle: '.details-product-option--Engraving .details-product-option__title',
         lengthTitle: '.details-product-option--Length-0028cm-or-inches0029 .product-details-module__title'
@@ -305,6 +306,26 @@ Ecwid.OnAPILoaded.add(function () {
         inputs.forEach(function (input, index) { updateEngraving(index); });
     }
 
+    // Some products (Trekking) sell as one stick or a pair, through a "Quantity" option.
+    // A single stick has nothing to engrave on a second pole, so hide that box and clear
+    // anything already typed in it, which also takes those letters off the price.
+    function syncSecondPole() {
+        var option = document.querySelector(SELECTORS.engravingPole2Option);
+        if (!option) return;
+        var picked = document.querySelector('.details-product-option--Quantity input[type="radio"]:checked');
+        var singleStick = !!(picked && /single/i.test(picked.value));
+        option.style.display = singleStick ? 'none' : '';
+        if (!engraving) return;
+        if (singleStick && engraving.inputs.length > 1 && engraving.inputs[1].value) {
+            engraving.inputs[1].value = '';
+            engraving.inputs[1].dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        // With only one pole there is nothing to number, so drop the "Ski Pole 1" hint.
+        if (engraving.inputs.length > 1) {
+            engraving.inputs[0].placeholder = singleStick ? '' : 'Ski Pole 1';
+        }
+    }
+
     // ------------------------------------------------------------------ size button
 
     function setupSizeButton() {
@@ -364,6 +385,7 @@ Ecwid.OnAPILoaded.add(function () {
         setupStrapDropdown();
         setupEngraving();
         setupSizeButton();
+        syncSecondPole(); // runs again whenever an option changes, so it follows Quantity
     }
 
     var pageLoadCount = 0;
