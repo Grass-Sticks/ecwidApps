@@ -2,15 +2,18 @@
   "_readme": [
     "Picture for each strap a shopper can pick. Keys are the EXACT Ecwid option",
     "value, so you look a strap up with no renaming, slugifying or guessing.",
-    "Verified 2026-10-07 against the live Strap option on US product 55001151",
-    "(Original Custom Grass Sticks) and Pick Your Design on 116311087 (MTN Straps).",
-    "Full URL = base + the filename.",
+    "Verified 2026-10-07 against the live Strap option on US 55001151 and Canada",
+    "793363376 (Original Custom Grass Sticks), and Pick Your Design on US 116311087",
+    "(MTN Straps). Full URL = base + the filename.",
+    "US sells 14 designs. Canada sells the same 14 plus Salida Magic, so the list",
+    "below is the union of both stores: check the product's own option list if you",
+    "need to know what one store sells.",
     "The store CSS matches on Ecwid's generated class name instead, which is the",
     "same value with every space turned into a dash: 'Just Point It - Zia' becomes",
     "'Just-Point-It---Zia'. Filenames here were derived from those class names.",
     "'retired' are designs that still have artwork but are not purchasable on any",
-    "product today. Their keys are reconstructed from the old CSS class names,",
-    "because the option values no longer exist to check against."
+    "product in either store today. Their keys are reconstructed from the old CSS",
+    "class names, because the option values no longer exist to check against."
   ],
   "base": "https://apps.grasssticks.com/straps/",
   "straps": {
@@ -24,6 +27,7 @@
     "Mount Tam": "mount-tam.png",
     "Purple Haze": "purple-haze.png",
     "Sacagawea": "sacagawea.png",
+    "Salida Magic": "salida-magic.png",
     "Spanish Peaks": "spanish-peaks.png",
     "Teton": "teton.png",
     "The Grand": "the-grand.png",
@@ -32,7 +36,6 @@
     "Fixed": "fixed.jpg"
   },
   "retired": {
-    "Salida Magic": "salida-magic.png",
     "Autumn": "autumn.png",
     "Mary Jane": "mary-jane.png",
     "Just Point It - Zia": "just-point-it-zia.png"
