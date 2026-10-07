@@ -84,6 +84,12 @@
     display: none !important;
 }
 
+/* Ecwid nudges the radio button 5px down, which was fine in a plain list but leaves it
+   off-centre beside a strap picture. Let the row's own centring do the work. */
+.ec-size .ec-store .details-product-option--Strap .form-control__radio-wrap {
+    top: 0 !important;
+}
+
 /* ---------- Engraving ---------- */
 
 /* Ecwid draws its own hint over text boxes ("Enter your length", a store-wide setting).

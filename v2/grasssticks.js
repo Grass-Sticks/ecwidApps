@@ -86,8 +86,39 @@ Ecwid.OnAPILoaded.add(function () {
         parts.title.parentNode.insertBefore(button, parts.title.nextSibling);
         parts.button = button;
 
+        alignStrapRows(parts);
         drawStrapButton(parts);
         expandStrap(parts); // start open, like the store always has
+    }
+
+    // Straps with no picture ("None") would otherwise start at the far left, out of line
+    // with the rest. Indent them by the picture's own width and gap, measured from a row
+    // that has one, so it stays right if the picture size changes in the store CSS.
+    // Rows whose radio button is hidden are the sub-headers ("Adjustable Mtn Straps:"),
+    // and they are left alone.
+    function alignStrapRows(parts) {
+        var radios = parts.content.querySelectorAll('input[type="radio"][name="Strap"]');
+        var indent = '';
+        for (var i = 0; i < radios.length; i++) {
+            var withPicture = radios[i].closest('.form-control');
+            if (!withPicture) continue;
+            var pictureStyle = getComputedStyle(withPicture, '::before');
+            if (!pictureStyle.backgroundImage || pictureStyle.backgroundImage === 'none') continue;
+            var width = parseFloat(pictureStyle.width) || 0;
+            if (!width) continue;
+            indent = (width + (parseFloat(pictureStyle.marginRight) || 0)) + 'px';
+            break;
+        }
+        if (!indent) return;
+        for (var j = 0; j < radios.length; j++) {
+            var row = radios[j].closest('.form-control');
+            if (!row) continue;
+            var style = getComputedStyle(row, '::before');
+            var hasPicture = style.backgroundImage && style.backgroundImage !== 'none';
+            var wrap = row.querySelector('.form-control__radio-wrap');
+            var radioShown = wrap && getComputedStyle(wrap).display !== 'none';
+            row.style.paddingLeft = (!hasPicture && radioShown) ? indent : '';
+        }
     }
 
     function drawStrapButton(parts) {
