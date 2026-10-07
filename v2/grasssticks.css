@@ -193,3 +193,122 @@
         padding: 4px 8px !important;
     }
 }
+
+/* ---------- Strap pictures ---------- */
+
+/* The little picture of each strap, drawn before its name in the strap list.
+   These 20 rules used to be typed into each store's own custom CSS, twice over, and
+   the pictures were hosted on zopim.io (an old Zendesk chat account) and imgbb.com.
+   Both stores now read this one copy, and the pictures live in v2/straps/ in the repo.
+   !important for the same reason as everything else here: Ecwid's own styles are very
+   specific, and this file may load before them. */
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Salida-Magic:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Wasatch-Front:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Autumn:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Bridgers:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Mount-Tam:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Flow:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Idaho-9:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Dark-Side:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Lone-Peak:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Teton:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--The-Grand:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Spanish-Peaks:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Mary-Jane:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Purple-Haze:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Just-Point-It---Zia:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Lone-2:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Sacagawea:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Fixed:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Adjustable:before,
+.form-control--radio.form-control.form-control--flexible.details-product-option--Fantasia:before {
+    content: '' !important;
+    height: 10px !important;
+    width: 260px !important;
+    margin-right: 10px !important;
+    background-size: 100% !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Salida-Magic:before {
+    background-image: url('https://apps.grasssticks.com/straps/salida-magic.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Wasatch-Front:before {
+    background-image: url('https://apps.grasssticks.com/straps/wasatch-front.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Autumn:before {
+    background-image: url('https://apps.grasssticks.com/straps/autumn.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Bridgers:before {
+    background-image: url('https://apps.grasssticks.com/straps/bridgers.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Mount-Tam:before {
+    background-image: url('https://apps.grasssticks.com/straps/mount-tam.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Flow:before {
+    background-image: url('https://apps.grasssticks.com/straps/flow.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Idaho-9:before {
+    background-image: url('https://apps.grasssticks.com/straps/idaho-9.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Dark-Side:before {
+    background-image: url('https://apps.grasssticks.com/straps/dark-side.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Lone-Peak:before {
+    background-image: url('https://apps.grasssticks.com/straps/lone-peak.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Teton:before {
+    background-image: url('https://apps.grasssticks.com/straps/teton.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--The-Grand:before {
+    background-image: url('https://apps.grasssticks.com/straps/the-grand.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Spanish-Peaks:before {
+    background-image: url('https://apps.grasssticks.com/straps/spanish-peaks.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Mary-Jane:before {
+    background-image: url('https://apps.grasssticks.com/straps/mary-jane.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Purple-Haze:before {
+    background-image: url('https://apps.grasssticks.com/straps/purple-haze.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Just-Point-It---Zia:before {
+    background-image: url('https://apps.grasssticks.com/straps/just-point-it-zia.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Lone-2:before {
+    background-image: url('https://apps.grasssticks.com/straps/lone-2.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Sacagawea:before {
+    background-image: url('https://apps.grasssticks.com/straps/sacagawea.png') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Fixed:before {
+    background-image: url('https://apps.grasssticks.com/straps/fixed.jpg') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Adjustable:before {
+    background-image: url('https://apps.grasssticks.com/straps/adjustable.jpg') !important;
+}
+
+.form-control--radio.form-control.form-control--flexible.details-product-option--Fantasia:before {
+    background-image: url('https://apps.grasssticks.com/straps/fantasia.png') !important;
+}
+
