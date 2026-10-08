@@ -319,3 +319,23 @@
     background-image: url('https://apps.grasssticks.com/straps/fantasia.png');
 }
 
+/* MTN Straps product page: same size as on the poles.
+   The store rule that makes these 30px tall only matches the poles' option, which is
+   called "Strap". On the MTN Straps product the option is "Pick Your Design", so the
+   pictures fell back to the 10px sliver above. These copy that store rule's sizing
+   (and the centred row it gives the radio button) for this option only. */
+.details-product-option--Pick-Your-Design.details-product-option--radio .form-control--radio.form-control.form-control--flexible {
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.details-product-option--Pick-Your-Design.details-product-option--radio .form-control--radio.form-control.form-control--flexible:before {
+    height: 30px;
+    width: 100%;
+    background-size: cover;
+}
+
+.details-product-option--Pick-Your-Design.details-product-option--radio .form-control--radio .form-control__radio-wrap {
+    top: 0;
+}
+
