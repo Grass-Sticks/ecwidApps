@@ -129,7 +129,8 @@
     display: none !important;
 }
 
-.ec-size .ec-store .gs-engraving-note {
+.ec-size .ec-store .gs-engraving-note,
+.ec-size .ec-store .gs-basket-note {
     margin-top: 4px !important;
     font-size: 12px !important;
     color: #6e6e6e !important;

@@ -6,6 +6,7 @@
  * - Engraving: counts engraving letters (spaces are free), limits each pole's text, and
  *   picks the matching choice in the hidden "Engraving Count" option.
  * - Size button: adds a "Click for sizing" link to the Length option.
+ * - Basket colour: locks Basket Color to Black for the basket sizes that only come in black.
  *
  * Prices are never calculated here. Ecwid prices every option itself (strap, grip,
  * engraving tier, quantity), so a price change or sale in Ecwid shows correctly without
@@ -357,6 +358,62 @@ Ecwid.OnAPILoaded.add(function () {
         }
     }
 
+    // ------------------------------------------------------------------ basket colour
+
+    // Some basket sizes only come in black (Tiny Disc, Huge Powder). Their choice in Ecwid
+    // says so, e.g. 'Huge Powder Basket- 4.75" (black only)'. When one is picked, set Basket
+    // Color to Black and lock it, so the order says what we will actually ship. Picking a
+    // size that comes in colours unlocks it again and puts back the colour the shopper had.
+    // Works off the "(black only)" wording, so any product or store that uses it is covered.
+    // (Andrew, 2026-10-08: shoppers kept thinking these baskets were sold out.)
+    function basketSelect(name) {
+        return document.querySelector('[class*="details-product-option--Basket-' + name + '"] select');
+    }
+
+    function blackChoice(select) {
+        for (var i = 0; i < select.options.length; i++) {
+            if (/^black$/i.test(select.options[i].value)) return select.options[i].value;
+        }
+        return null;
+    }
+
+    function pickBasketColour(select, value) {
+        if (select.value === value) return;
+        select.value = value;
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function syncBasketColour() {
+        var size = basketSelect('Size');
+        var colour = basketSelect('Col'); // "Color" or "Colour"
+        if (!size || !colour) return;
+        var black = blackChoice(colour);
+        if (!black) return;
+        var box = colour.closest('.product-details-module__content') || colour.parentNode;
+        var note = box.querySelector('.gs-basket-note');
+        var blackOnly = /black only/i.test(size.value);
+
+        if (blackOnly) {
+            if (!colour.disabled) colour.dataset.gsColourBefore = colour.value;
+            colour.disabled = true;
+            pickBasketColour(colour, black);
+            if (!note) {
+                note = document.createElement('div');
+                note.className = 'gs-basket-note';
+                box.appendChild(note);
+            }
+            note.textContent = 'This basket size comes in black only.';
+            return;
+        }
+
+        if (note) note.parentNode.removeChild(note);
+        if (!colour.disabled) return;
+        colour.disabled = false;
+        var before = colour.dataset.gsColourBefore;
+        delete colour.dataset.gsColourBefore;
+        if (before) pickBasketColour(colour, before);
+    }
+
     // ------------------------------------------------------------------ size button
 
     function setupSizeButton() {
@@ -417,6 +474,7 @@ Ecwid.OnAPILoaded.add(function () {
         setupEngraving();
         setupSizeButton();
         syncSecondPole(); // runs again whenever an option changes, so it follows Quantity
+        syncBasketColour(); // same, so it follows Basket Size
     }
 
     var pageLoadCount = 0;
