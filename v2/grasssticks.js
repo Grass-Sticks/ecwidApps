@@ -368,6 +368,8 @@ Ecwid.OnAPILoaded.add(function () {
     // in colours brings the colours back and puts back the colour the shopper had.
     // Works off the "(black only)" wording, so any product or store that uses it is covered.
     // (Andrew, 2026-10-08: shoppers kept thinking these baskets were sold out.)
+    var BASKET_NOTE = 'Switch to Medium for colors';
+
     function basketSelect(name) {
         return document.querySelector('[class*="details-product-option--Basket-' + name + '"] select');
     }
@@ -405,7 +407,7 @@ Ecwid.OnAPILoaded.add(function () {
                 note.className = 'gs-basket-note';
                 box.appendChild(note);
             }
-            note.textContent = 'Switch to Medium for other colors.';
+            note.textContent = BASKET_NOTE + '.';
             return;
         }
 
@@ -418,12 +420,24 @@ Ecwid.OnAPILoaded.add(function () {
         if (before) pickBasketColour(colour, before);
     }
 
-    // Greys out every colour except `keep` (null brings them all back). Only touches the
-    // colours it greyed itself, so anything Ecwid greys out stays as Ecwid set it.
+    // Greys out every colour except `keep` (null brings them all back), and puts a line at
+    // the top of the opened menu saying why. Only touches the colours it greyed itself, so
+    // anything Ecwid greys out stays as Ecwid set it.
     function greyOutColours(select, keep) {
+        var menuNote = select.querySelector('option[data-gs-menu-note]');
+        if (keep !== null && !menuNote) {
+            menuNote = document.createElement('option');
+            menuNote.dataset.gsMenuNote = 'yes';
+            menuNote.disabled = true;
+            menuNote.value = '';
+            menuNote.textContent = BASKET_NOTE;
+            select.insertBefore(menuNote, select.firstChild);
+        } else if (keep === null && menuNote) {
+            select.removeChild(menuNote);
+        }
         for (var i = 0; i < select.options.length; i++) {
             var option = select.options[i];
-            if (!option.value) continue; // "Please choose"
+            if (option.dataset.gsMenuNote) continue;
             if (keep !== null && option.value !== keep) {
                 if (!option.disabled) {
                     option.disabled = true;
