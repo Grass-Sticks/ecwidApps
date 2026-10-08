@@ -369,6 +369,7 @@ Ecwid.OnAPILoaded.add(function () {
     // Works off the "(black only)" wording, so any product or store that uses it is covered.
     // (Andrew, 2026-10-08: shoppers kept thinking these baskets were sold out.)
     var BASKET_NOTE = 'Switch to Medium for colors';
+    var SWITCH_TO_COLOURS = 'gs-switch-to-medium'; // the menu line's value, never a colour
 
     function basketSelect(name) {
         return document.querySelector('[class*="details-product-option--Basket-' + name + '"] select');
@@ -420,16 +421,34 @@ Ecwid.OnAPILoaded.add(function () {
         if (before) pickBasketColour(colour, before);
     }
 
-    // Greys out every colour except `keep` (null brings them all back), and puts a line at
-    // the top of the opened menu saying why. Only touches the colours it greyed itself, so
-    // anything Ecwid greys out stays as Ecwid set it.
+    // Picking the "Switch to Medium for colors" line in the colour menu switches Basket Size
+    // to the first size that comes in colours (Medium), which brings the colours back.
+    // Ecwid must never see this line as a colour, so its change is stopped before Ecwid's
+    // own listener and the menu is put back on Black first.
+    function switchToColourSize(colour) {
+        var size = basketSelect('Size');
+        var black = blackChoice(colour);
+        if (black) colour.value = black;
+        if (!size) return;
+        for (var i = 0; i < size.options.length; i++) {
+            var option = size.options[i];
+            if (/medium/i.test(option.value) && !/black only/i.test(option.value)) {
+                size.value = option.value;
+                size.dispatchEvent(new Event('change', { bubbles: true }));
+                return;
+            }
+        }
+    }
+
+    // Greys out every colour except `keep` (null brings them all back), and puts the
+    // "Switch to Medium for colors" line at the top of the menu. Only touches the colours it
+    // greyed itself, so anything Ecwid greys out stays as Ecwid set it.
     function greyOutColours(select, keep) {
         var menuNote = select.querySelector('option[data-gs-menu-note]');
         if (keep !== null && !menuNote) {
             menuNote = document.createElement('option');
             menuNote.dataset.gsMenuNote = 'yes';
-            menuNote.disabled = true;
-            menuNote.value = '';
+            menuNote.value = SWITCH_TO_COLOURS;
             menuNote.textContent = BASKET_NOTE;
             select.insertBefore(menuNote, select.firstChild);
         } else if (keep === null && menuNote) {
@@ -524,6 +543,17 @@ Ecwid.OnAPILoaded.add(function () {
         if (!parts || !parts.button) return;
         drawStrapButton(parts);
         collapseStrap(parts);
+    });
+
+    // "Switch to Medium for colors" picked in the colour menu. Caught on the way down
+    // (capture), so Ecwid's own listener on the menu never hears it.
+    ['input', 'change'].forEach(function (type) {
+        document.addEventListener(type, function (event) {
+            var target = event.target;
+            if (!target || target.tagName !== 'SELECT' || target.value !== SWITCH_TO_COLOURS) return;
+            event.stopImmediatePropagation();
+            if (type === 'change') switchToColourSize(target);
+        }, true);
     });
 
     document.addEventListener('click', function (event) {
