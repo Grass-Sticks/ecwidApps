@@ -6,7 +6,8 @@
  * - Engraving: counts engraving letters (spaces are free), limits each pole's text, and
  *   picks the matching choice in the hidden "Engraving Count" option.
  * - Size button: adds a "Click for sizing" link to the Length option.
- * - Basket colour: locks Basket Color to Black for the basket sizes that only come in black.
+ * - Basket colour: picks Black and greys out the other colours for the basket sizes that
+ *   only come in black.
  *
  * Prices are never calculated here. Ecwid prices every option itself (strap, grip,
  * engraving tier, quantity), so a price change or sale in Ecwid shows correctly without
@@ -362,8 +363,9 @@ Ecwid.OnAPILoaded.add(function () {
 
     // Some basket sizes only come in black (Tiny Disc, Huge Powder). Their choice in Ecwid
     // says so, e.g. 'Huge Powder Basket- 4.75" (black only)'. When one is picked, set Basket
-    // Color to Black and lock it, so the order says what we will actually ship. Picking a
-    // size that comes in colours unlocks it again and puts back the colour the shopper had.
+    // Color to Black and grey out the other colours (the menu still opens, so the shopper
+    // can see why), so the order says what we will actually ship. Picking a size that comes
+    // in colours brings the colours back and puts back the colour the shopper had.
     // Works off the "(black only)" wording, so any product or store that uses it is covered.
     // (Andrew, 2026-10-08: shoppers kept thinking these baskets were sold out.)
     function basketSelect(name) {
@@ -394,24 +396,44 @@ Ecwid.OnAPILoaded.add(function () {
         var blackOnly = /black only/i.test(size.value);
 
         if (blackOnly) {
-            if (!colour.disabled) colour.dataset.gsColourBefore = colour.value;
-            colour.disabled = true;
+            if (!colour.dataset.gsBlackOnly) colour.dataset.gsColourBefore = colour.value;
+            colour.dataset.gsBlackOnly = 'yes';
+            greyOutColours(colour, black);
             pickBasketColour(colour, black);
             if (!note) {
                 note = document.createElement('div');
                 note.className = 'gs-basket-note';
                 box.appendChild(note);
             }
-            note.textContent = 'This basket size comes in black only.';
+            note.textContent = 'Switch to Medium for other colors.';
             return;
         }
 
         if (note) note.parentNode.removeChild(note);
-        if (!colour.disabled) return;
-        colour.disabled = false;
+        if (!colour.dataset.gsBlackOnly) return;
+        delete colour.dataset.gsBlackOnly;
+        greyOutColours(colour, null);
         var before = colour.dataset.gsColourBefore;
         delete colour.dataset.gsColourBefore;
         if (before) pickBasketColour(colour, before);
+    }
+
+    // Greys out every colour except `keep` (null brings them all back). Only touches the
+    // colours it greyed itself, so anything Ecwid greys out stays as Ecwid set it.
+    function greyOutColours(select, keep) {
+        for (var i = 0; i < select.options.length; i++) {
+            var option = select.options[i];
+            if (!option.value) continue; // "Please choose"
+            if (keep !== null && option.value !== keep) {
+                if (!option.disabled) {
+                    option.disabled = true;
+                    option.dataset.gsGreyed = 'yes';
+                }
+            } else if (option.dataset.gsGreyed) {
+                option.disabled = false;
+                delete option.dataset.gsGreyed;
+            }
+        }
     }
 
     // ------------------------------------------------------------------ size button
