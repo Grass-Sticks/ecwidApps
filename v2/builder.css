@@ -1,0 +1,800 @@
+/*
+ * Grass Sticks pole builder (v2). Styles for builder.js.
+ * Everything is scoped to html[data-gs-builder="on"], which builder.js sets only on
+ * products in its BUILDER_PRODUCTS list. !important is needed because Ecwid's own
+ * storefront styles are very specific.
+ */
+
+html[data-gs-builder="on"] {
+    --gs-b-ink: #1c1c1c;
+    --gs-b-muted: #6e6e6e;
+    --gs-b-line: #e3e3e3;
+    --gs-b-soft: #f6f6f4;
+    --gs-b-pine: #1f4d3a;
+    --gs-b-bamboo: #b9781f;
+    --gs-b-warn: #b5452b;
+    --gs-b-note-bg: #fff7e8;
+    --gs-b-note-line: #f0dcb4;
+}
+
+/* ---------- Steps ---------- */
+
+/* Each step is one of Ecwid's option boxes with our header on top. Ecwid's own title is
+   replaced by the header; Ecwid's dropdowns and radio list are hidden but still there,
+   because the swatches and tiles work by picking choices in them. */
+html[data-gs-builder="on"] .ec-store [data-gs-step] {
+    margin: 0 !important;
+    border-top: 1px solid var(--gs-b-line) !important;
+}
+
+html[data-gs-builder="on"] .ec-store [data-gs-step][data-gs-part="extra"] {
+    border-top: 0 !important;
+    padding-bottom: 4px !important;
+}
+
+html[data-gs-builder="on"] .ec-store [data-gs-step="engraving"]:last-of-type,
+html[data-gs-builder="on"] .ec-store [data-gs-step="engraving"][data-gs-part="extra"] {
+    border-bottom: 1px solid var(--gs-b-line) !important;
+}
+
+html[data-gs-builder="on"] .ec-store [data-gs-step] > .details-product-option__title,
+html[data-gs-builder="on"] .ec-store [data-gs-step="grip"] > .product-details-module__content,
+html[data-gs-builder="on"] .ec-store [data-gs-step="baskets"] > .product-details-module__content,
+html[data-gs-builder="on"] .ec-store [data-gs-step="baskets"][data-gs-part="extra"],
+html[data-gs-builder="on"] .ec-store [data-gs-step="strap"] > .product-details-module__content,
+html[data-gs-builder="on"] .ec-store [data-gs-step="strap"] .gs-strap-toggle {
+    display: none !important;
+}
+
+/* A closed step shows only its header. */
+html[data-gs-builder="on"] .ec-store [data-gs-step][data-gs-open="no"] > .product-details-module__content,
+html[data-gs-builder="on"] .ec-store [data-gs-step][data-gs-open="no"] > .gs-b-body,
+html[data-gs-builder="on"] .ec-store [data-gs-step][data-gs-open="no"] > .gs-b-next,
+html[data-gs-builder="on"] .ec-store [data-gs-step][data-gs-open="no"] > .gs-b-engrave,
+html[data-gs-builder="on"] .ec-store [data-gs-step][data-gs-part="extra"][data-gs-open="no"] {
+    display: none !important;
+}
+
+html[data-gs-builder="on"] .ec-store [data-gs-step][data-gs-open="yes"] {
+    padding-bottom: 16px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-head {
+    display: grid !important;
+    grid-template-columns: 24px auto minmax(0, 1fr) 12px !important;
+    gap: 10px !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-height: 52px !important;
+    margin: 0 !important;
+    padding: 12px 0 !important;
+    background: none !important;
+    border: 0 !important;
+    color: var(--gs-b-ink) !important;
+    font: inherit !important;
+    text-align: left !important;
+    cursor: pointer !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-num {
+    display: grid !important;
+    place-items: center !important;
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 50% !important;
+    background: #ececec !important;
+    color: #555 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-head--done .gs-b-num {
+    background: var(--gs-b-pine) !important;
+    color: #fff !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-title {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-value {
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+    font-size: 14px !important;
+    color: #444 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-value--warn {
+    color: var(--gs-b-warn) !important;
+    font-weight: 600 !important;
+}
+
+/* .gs-b-value in the selector so this beats the full-size .gs-b-chip rule below. */
+html[data-gs-builder="on"] .ec-store .gs-b-value .gs-b-dot {
+    width: 14px !important;
+    height: 14px !important;
+    flex: none !important;
+    box-shadow: none !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-thumb {
+    width: 44px !important;
+    height: 14px !important;
+    object-fit: cover !important;
+    border-radius: 2px !important;
+    flex: none !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-chev {
+    color: #888 !important;
+    transform-origin: 50% 50% !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-head[aria-expanded="true"] .gs-b-chev {
+    transform: rotate(180deg) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-body {
+    display: grid !important;
+    gap: 12px !important;
+    margin-bottom: 12px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-chosen {
+    margin: 0 !important;
+    font-size: 14px !important;
+    color: #444 !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-chosen b {
+    color: var(--gs-b-ink) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-next,
+html[data-gs-builder="on"] .ec-store .gs-b-link {
+    display: inline !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: none !important;
+    border: 0 !important;
+    color: var(--gs-b-pine) !important;
+    font: inherit !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 3px !important;
+    cursor: pointer !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-next {
+    display: block !important;
+    margin-top: 4px !important;
+    text-decoration: none !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-next::after {
+    content: ' \2192' !important;
+}
+
+/* ---------- Colour swatches ---------- */
+
+html[data-gs-builder="on"] .ec-store .gs-b-swatches {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)) !important;
+    gap: 12px 6px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-swatch {
+    position: relative !important;
+    display: grid !important;
+    justify-items: center !important;
+    gap: 5px !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 3px 0 !important;
+    background: none !important;
+    border: 0 !important;
+    color: #444 !important;
+    font: inherit !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    cursor: pointer !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-chip {
+    display: block !important;
+    position: relative !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(0, 0, 0, 0.14) !important;
+    box-shadow: inset 0 -6px 10px rgba(0, 0, 0, 0.12), inset 0 4px 6px rgba(255, 255, 255, 0.25) !important;
+    transition: transform 0.12s !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-swatch:hover .gs-b-chip {
+    transform: scale(1.06) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-swatch[aria-pressed="true"] {
+    color: var(--gs-b-ink) !important;
+    font-weight: 700 !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-swatch[aria-pressed="true"] .gs-b-chip {
+    outline: 2px solid var(--gs-b-ink) !important;
+    outline-offset: 3px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-swatch:disabled {
+    opacity: 0.25 !important;
+    cursor: not-allowed !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-swatch:disabled .gs-b-chip {
+    transform: none !important;
+}
+
+/* A colour with no entry in SWATCHES: its name in a plain circle. */
+html[data-gs-builder="on"] .ec-store .gs-b-chip--text {
+    background: var(--gs-b-soft) !important;
+}
+
+.gs-b-chip--cork {
+    background:
+        radial-gradient(circle at 30% 30%, #6d4520 0 1.5px, transparent 2px) 0 0 / 7px 7px,
+        radial-gradient(circle at 70% 60%, #8a5a2c 0 1.2px, transparent 1.6px) 0 0 / 9px 9px,
+        #c08a52 !important;
+}
+
+.gs-b-chip--clear {
+    background: repeating-conic-gradient(#e6e6e6 0 25%, #fff 0 50%) 0 0 / 10px 10px !important;
+}
+
+.gs-b-chip--clear::after {
+    content: '' !important;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: 50% !important;
+    background: rgba(170, 200, 210, 0.35) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-tag {
+    position: absolute !important;
+    top: -6px !important;
+    right: 0 !important;
+    padding: 1px 5px !important;
+    border-radius: 7px !important;
+    background: var(--gs-b-pine) !important;
+    color: #fff !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
+}
+
+/* ---------- Basket sizes ---------- */
+
+html[data-gs-builder="on"] .ec-store .gs-b-sizes {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-size {
+    position: relative !important;
+    display: grid !important;
+    justify-items: center !important;
+    gap: 2px !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 8px 4px 7px !important;
+    background: #fff !important;
+    border: 1px solid #d6d6d6 !important;
+    border-radius: 10px !important;
+    color: #333 !important;
+    font: inherit !important;
+    line-height: 1.25 !important;
+    cursor: pointer !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-size svg {
+    height: 26px !important;
+    width: 30px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-size b {
+    font-size: 14px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-size span {
+    font-size: 12px !important;
+    color: var(--gs-b-muted) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-size[aria-pressed="true"] {
+    border: 2px solid var(--gs-b-ink) !important;
+    padding: 7px 3px 6px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-note {
+    margin: 0 !important;
+    padding: 8px 10px !important;
+    background: var(--gs-b-note-bg) !important;
+    border: 1px solid var(--gs-b-note-line) !important;
+    border-radius: 8px !important;
+    color: #5b4417 !important;
+    font-size: 13px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-note[hidden] {
+    display: none !important;
+}
+
+/* grasssticks.js's own basket note is inside the hidden dropdown box; this one replaces it. */
+
+/* ---------- Straps ---------- */
+
+html[data-gs-builder="on"] .ec-store .gs-b-group {
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    margin-top: 2px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    color: var(--gs-b-muted) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-straps {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-straps--small {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-strap {
+    display: grid !important;
+    gap: 4px !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 4px !important;
+    background: #fff !important;
+    border: 1px solid #dedede !important;
+    border-radius: 8px !important;
+    color: #333 !important;
+    font: inherit !important;
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    text-align: left !important;
+    cursor: pointer !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-straps--small .gs-b-strap {
+    text-align: center !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-strap img,
+html[data-gs-builder="on"] .ec-store .gs-b-strap-none {
+    display: block !important;
+    width: 100% !important;
+    height: 30px !important;
+    object-fit: cover !important;
+    border-radius: 4px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-strap-none {
+    display: grid !important;
+    place-items: center !important;
+    background: var(--gs-b-soft) !important;
+    color: #999 !important;
+    font-size: 11px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-strap-price {
+    font-size: 12px !important;
+    color: var(--gs-b-muted) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-strap[aria-pressed="true"] {
+    border: 2px solid var(--gs-b-ink) !important;
+    padding: 3px !important;
+    font-weight: 700 !important;
+}
+
+/* ---------- Length ---------- */
+
+html[data-gs-builder="on"] .ec-store .gs-b-units {
+    display: inline-flex !important;
+    justify-self: start !important;
+    border: 1px solid #d6d6d6 !important;
+    border-radius: 6px !important;
+    overflow: hidden !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-unit {
+    width: auto !important;
+    min-width: 48px !important;
+    margin: 0 !important;
+    padding: 6px 12px !important;
+    background: #fff !important;
+    border: 0 !important;
+    color: #555 !important;
+    font: inherit !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-unit[aria-pressed="true"] {
+    background: var(--gs-b-ink) !important;
+    color: #fff !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-help {
+    margin: 0 !important;
+    font-size: 13px !important;
+    color: #555 !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-help--warn {
+    color: var(--gs-b-warn) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-finder {
+    display: grid !important;
+    gap: 10px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-finder-toggle {
+    justify-self: start !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-finder-panel {
+    display: grid !important;
+    gap: 10px !important;
+    padding: 12px !important;
+    background: #eef6ef !important;
+    border: 1px solid #cfe5d2 !important;
+    border-radius: 10px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-finder-panel[hidden] {
+    display: none !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-finder-q {
+    margin: 0 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-finder-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-finder-box {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-size: 13px !important;
+    color: #555 !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-finder-box input {
+    width: 52px !important;
+    height: 36px !important;
+    padding: 4px 6px !important;
+    border: 1px solid #b9cfbd !important;
+    border-radius: 6px !important;
+    background: #fff !important;
+    font: inherit !important;
+    font-size: 16px !important; /* 16px stops iPhones zooming in on the box */
+    text-align: center !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-finder-result {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-size: 14px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-finder-result:empty {
+    display: none !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-use {
+    width: auto !important;
+    margin: 0 !important;
+    padding: 7px 12px !important;
+    background: var(--gs-b-pine) !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+    color: #fff !important;
+    font: inherit !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+}
+
+/* ---------- Engraving preview ---------- */
+
+html[data-gs-builder="on"] .ec-store .gs-b-engrave {
+    display: grid !important;
+    gap: 6px !important;
+    margin: 10px 0 12px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-bamboo {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 36px !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+    background: linear-gradient(180deg, #e7b765 0%, #d39b45 35%, #b97a2b 70%, #9b6220 100%) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-bamboo[hidden] {
+    display: none !important;
+}
+
+/* Two bamboo nodes. */
+html[data-gs-builder="on"] .ec-store .gs-b-bamboo::before,
+html[data-gs-builder="on"] .ec-store .gs-b-bamboo::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 3px !important;
+    background: rgba(90, 50, 10, 0.35) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-bamboo::before { left: 12% !important; }
+html[data-gs-builder="on"] .ec-store .gs-b-bamboo::after { right: 12% !important; }
+
+html[data-gs-builder="on"] .ec-store .gs-b-bamboo span {
+    position: relative !important;
+    max-width: 72% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    color: rgba(55, 28, 6, 0.88) !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    text-shadow: 0 1px 0 rgba(255, 230, 180, 0.45) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-bamboo span.gs-b-empty {
+    color: rgba(55, 28, 6, 0.4) !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.02em !important;
+    text-transform: none !important;
+}
+
+/* ---------- Staff picks ---------- */
+
+html[data-gs-builder="on"] .ec-store .gs-b-picks {
+    display: grid !important;
+    gap: 8px !important;
+    margin: 0 0 16px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-picks-title {
+    margin: 0 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    color: var(--gs-b-muted) !important;
+}
+
+/* A sideways-scrolling row; the last pick peeks in so it's clear there are more. */
+html[data-gs-builder="on"] .ec-store .gs-b-picks-row {
+    display: grid !important;
+    grid-auto-flow: column !important;
+    grid-auto-columns: minmax(150px, 42%) !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    padding-bottom: 4px !important;
+    scrollbar-width: thin !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-pick {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    gap: 8px !important;
+    align-items: center !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 8px 10px !important;
+    background: #fff !important;
+    border: 1px solid #dedede !important;
+    border-radius: 10px !important;
+    color: #333 !important;
+    font: inherit !important;
+    text-align: left !important;
+    scroll-snap-align: start !important;
+    cursor: pointer !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-pick:hover {
+    border-color: #999 !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-pick-dots {
+    display: flex !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-pick-dots .gs-b-chip {
+    width: 22px !important;
+    height: 22px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-pick-dots .gs-b-chip + .gs-b-chip {
+    margin-left: -7px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-pick-words {
+    display: grid !important;
+    min-width: 0 !important;
+    line-height: 1.25 !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-pick-words b {
+    font-size: 14px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-pick-words span {
+    font-size: 12px !important;
+    color: var(--gs-b-muted) !important;
+}
+
+/* ---------- Pinned bar (phones) ---------- */
+
+/* Outside .ec-store (it hangs off <body>), so scoped by the html attribute alone. */
+html[data-gs-builder="on"] .gs-b-bar {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 2147482000 !important;
+    display: grid !important;
+    grid-template-columns: 50px 50px minmax(0, 1fr) auto !important;
+    gap: 8px !important;
+    align-items: center !important;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+    background: #fff !important;
+    border-top: 1px solid var(--gs-b-line) !important;
+    box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.08) !important;
+    font-family: inherit !important;
+    color: var(--gs-b-ink) !important;
+    animation: gs-b-rise 0.2s ease-out !important;
+}
+
+html[data-gs-builder="on"] .gs-b-bar[hidden] {
+    display: none !important;
+}
+
+@keyframes gs-b-rise {
+    from { transform: translateY(100%); }
+    to { transform: none; }
+}
+
+html[data-gs-builder="on"] .gs-b-crop {
+    position: relative !important;
+    width: 50px !important;
+    height: 62px !important;
+    overflow: hidden !important;
+    border: 1px solid var(--gs-b-line) !important;
+    border-radius: 8px !important;
+    background: #fff !important;
+}
+
+html[data-gs-builder="on"] .gs-b-stage {
+    position: absolute !important;
+    max-width: none !important;
+}
+
+html[data-gs-builder="on"] .gs-b-stage img {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+}
+
+html[data-gs-builder="on"] .gs-b-stage .gs-b-stage-strap {
+    width: auto !important;
+    height: auto !important;
+}
+
+html[data-gs-builder="on"] .gs-b-bar-text {
+    display: grid !important;
+    min-width: 0 !important;
+    line-height: 1.25 !important;
+}
+
+html[data-gs-builder="on"] .gs-b-bar-price {
+    font-size: 17px !important;
+    font-variant-numeric: tabular-nums !important;
+}
+
+html[data-gs-builder="on"] .gs-b-bar-summary {
+    font-size: 11px !important;
+    color: var(--gs-b-muted) !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+}
+
+html[data-gs-builder="on"] .gs-b-bar-button {
+    margin: 0 !important;
+    padding: 12px 14px !important;
+    background: #222 !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    color: #fff !important;
+    font: inherit !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+}
+
+html[data-gs-builder="on"] .gs-b-bar-button--need {
+    background: #6b6b6b !important;
+}
+
+/* Room at the bottom of the page so the bar never covers the last of it. */
+html[data-gs-builder="on"][data-gs-bar] body {
+    padding-bottom: 86px !important;
+}
+
+/* ---------- Focus and motion ---------- */
+
+html[data-gs-builder="on"] .gs-b-head:focus-visible,
+html[data-gs-builder="on"] .gs-b-swatch:focus-visible,
+html[data-gs-builder="on"] .gs-b-size:focus-visible,
+html[data-gs-builder="on"] .gs-b-strap:focus-visible,
+html[data-gs-builder="on"] .gs-b-unit:focus-visible,
+html[data-gs-builder="on"] .gs-b-link:focus-visible,
+html[data-gs-builder="on"] .gs-b-next:focus-visible,
+html[data-gs-builder="on"] .gs-b-use:focus-visible,
+html[data-gs-builder="on"] .gs-b-pick:focus-visible,
+html[data-gs-builder="on"] .gs-b-bar-button:focus-visible {
+    outline: 2px solid rgba(135, 186, 218, 1) !important;
+    outline-offset: 2px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html[data-gs-builder="on"] .gs-b-bar,
+    html[data-gs-builder="on"] .gs-b-chip,
+    html[data-gs-builder="on"] .gs-b-chev {
+        animation: none !important;
+        transition: none !important;
+    }
+}

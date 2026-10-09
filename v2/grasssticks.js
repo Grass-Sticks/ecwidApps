@@ -15,7 +15,23 @@
  * product numbers, so a new product works as soon as it has the right options in Ecwid.
  *
  * Replaces Cabot's apps: GSEngraving*, GSCondenseStrapOption*, GSSizeButton*.
+ *
+ * Also loads the pole builder (builder.js + builder.css, next to this file). It decides
+ * for itself which products it runs on (BUILDER_PRODUCTS in builder.js).
  */
+(function loadBuilder() {
+    var me = document.currentScript;
+    var base = me && me.src ? me.src.replace(/grasssticks\.js(\?.*)?$/, '') : 'https://apps.grasssticks.com/';
+    var style = document.createElement('link');
+    style.rel = 'stylesheet';
+    style.href = base + 'builder.css';
+    document.head.appendChild(style);
+    var script = document.createElement('script');
+    script.src = base + 'builder.js';
+    script.async = true;
+    document.head.appendChild(script);
+})();
+
 Ecwid.OnAPILoaded.add(function () {
     var STORE_ID = Ecwid.getOwnerId();
     var CANADA_STORE_ID = 125951011;
