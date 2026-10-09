@@ -1,0 +1,510 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap');
+
+/*
+ * Ski pole size calculator styles (grasssticks.com and grasssticks.ca /skipolelengthcalc/).
+ * Loaded by sizecalc.js. Moved here unchanged from Cabot's Squarespace code block
+ * (Grass-Sticks/squarespace GSSizeCalculator/CalculatorFullCurrent.html), 2026-10-09.
+ */
+
+.ski-pole-calculator {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ski-pole-calculator .calculator-wrapper {
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    position: relative;
+    margin: 20px 0;
+    max-height: 430px;
+}
+
+.ski-pole-calculator #sizeCalcContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    border: 8px solid #5a371d;
+    font-family: 'Raleway', sans-serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background: darkgreen;
+    color: white;
+    box-sizing: border-box;
+    font-size: clamp(14px, 3vw, 24px);
+}
+
+.ski-pole-calculator #title {
+    margin-top: 10px;
+}
+
+.ski-pole-calculator .heightInputs {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1em;
+    margin-top: 0.5em;
+    margin-left: 0;
+}
+
+.ski-pole-calculator .height {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+}
+
+.ski-pole-calculator label {
+    margin-left: 8px;
+}
+
+.ski-pole-calculator #feetInput, .ski-pole-calculator #inchesInput, .ski-pole-calculator #heightCm {
+    background-color: transparent;
+    border: 1px solid lightgreen;
+    color: white;
+    width: 3em;
+    font-size: 1.6em;
+    text-align: center;
+    border-radius: 0.25em;
+}
+
+/* Optional: Style for when inputs are focused */
+.ski-pole-calculator #feetInput:focus, .ski-pole-calculator #inchesInput:focus, .ski-pole-calculator #heightCm:focus {
+    outline: none;
+    border-color: lime;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.2);
+}
+
+.ski-pole-calculator .top,
+.ski-pole-calculator .mid,
+.ski-pole-calculator .bottom {
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+.ski-pole-calculator .paddlingStyle {
+    font-size: 18px;
+}
+
+.ski-pole-calculator #finalLength {
+    border: 0;
+    width: 2.5em;
+    font-size: 2.4em;
+    color: rgba(0, 195, 0, 0.7);
+    background: transparent;
+    text-align: center;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: default;
+}
+
+.ski-pole-calculator #clearBtn {
+    margin-bottom: 7px;
+    margin-top: 7px;
+    float: left;
+    border-radius: 4px;
+    width: 120px;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+/* Large screens (default above) */
+.ski-pole-calculator h2 {
+    font-size: 2.2em;
+    margin: 0;
+    padding: 0.5em 0;
+    text-align: center;
+    position: relative;
+    line-height: 1.2;
+}
+
+/* Medium screens */
+@media (max-width: 900px) {
+    .ski-pole-calculator #sizeCalcContainer {
+        width: 100%;
+        /* min-height: 430px; */
+        margin: 10px auto;
+        border-width: 6px;
+    }
+
+    .ski-pole-calculator h2 {
+        font-size: 2rem;
+        margin-left: -30px;
+    }
+
+    .ski-pole-calculator .heightInputs {
+        margin-top: 0;
+    }
+
+    .ski-pole-calculator #feetInput, .ski-pole-calculator #inchesInput, .ski-pole-calculator #heightCm {
+        width: 40px;
+        font-size: 14px;
+    }
+
+    .ski-pole-calculator .result-display {
+        padding: 12px 20px;
+    }
+
+    .ski-pole-calculator #finalLength {
+        font-size: 24px;
+    }
+}
+
+
+.ski-pole-calculator .toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.8em;
+}
+
+.ski-pole-calculator .unit-label {
+    font-weight: bold;
+    font-size: 12px;
+    color: lightgreen;
+}
+
+/* The switch - the box around the slider */
+.ski-pole-calculator .switch {
+    position: relative;
+    display: inline-block;
+    width: 3.5em;
+    height: 2em;
+}
+
+/* Hide default HTML checkbox */
+.ski-pole-calculator .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.ski-pole-calculator .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: lightgreen;
+    transition: .4s;
+}
+
+.ski-pole-calculator .slider:before {
+    position: absolute;
+    content: "";
+    height: 1.6em;
+    width: 1.6em;
+    left: 0.2em;
+    bottom: 0.2em;
+    background-color: white;
+    transition: .4s;
+}
+
+.ski-pole-calculator input:checked + .slider {
+    background-color: darkgreen;
+}
+
+.ski-pole-calculator input:focus + .slider {
+    box-shadow: 0 0 1px darkgreen;
+}
+
+.ski-pole-calculator input:checked + .slider:before {
+    transform: translateX(1.5em);
+}
+
+/* Rounded sliders */
+.ski-pole-calculator .slider.round {
+    border-radius: 34px;
+}
+
+.ski-pole-calculator .slider.round:before {
+    border-radius: 50%;
+}
+
+.ski-pole-calculator .result-display {
+    text-align: center;
+    padding: 0.8em 1.2em;
+    border: 0.2em solid lightgreen;
+    border-radius: 0.6em;
+    font-size: 1em;
+}
+
+.ski-pole-calculator h2 {
+    margin-bottom: 20px;
+    margin-left: -50px;
+}
+
+.ski-pole-calculator .result-label {
+    color: white;
+    margin-bottom: 0.5em;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.ski-pole-calculator .arrow {
+    font-size: 2.8em;
+    color: lightgreen;
+    transition: color 0.4s;
+}
+
+.ski-pole-calculator #message {
+    position: relative;
+    width: fit-content;
+    margin: 20px auto;
+    background-color: white;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.ski-pole-calculator #message p {
+    color: black;
+    margin: 0;
+    font-size: 16px;
+    font-family: "Gill Sans", sans-serif;
+}
+
+.ski-pole-calculator #message a {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: darkgreen;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.4s;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Add hover effect */
+.ski-pole-calculator #message a:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Update the column layout */
+.ski-pole-calculator .col-6 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1em;
+    height: 100%;
+}
+
+/* Base size adjustment for mobile */
+@media (max-width: 500px) {
+    .ski-pole-calculator #sizeCalcContainer {
+        font-size: clamp(10px, 2.5vw, 18px);  /* Reduced base font size */
+    }
+
+    .ski-pole-calculator h2 {
+        font-size: 1.8em;
+    }
+
+    .ski-pole-calculator #feetInput,
+    .ski-pole-calculator #inchesInput,
+    .ski-pole-calculator #heightCm {
+        width: 2.5em;
+        font-size: 1.3em;
+    }
+
+    .ski-pole-calculator .result-label {
+        font-size: 1.1em;
+    }
+
+    .ski-pole-calculator #finalLength {
+        font-size: 2em;
+    }
+
+    .ski-pole-calculator .arrow {
+        font-size: 2em;
+    }
+}
+
+/* Even smaller for very small screens */
+@media (max-width: 350px) {
+    .ski-pole-calculator #sizeCalcContainer {
+        font-size: clamp(8px, 2.2vw, 14px);  /* Further reduced base font size */
+    }
+
+    .ski-pole-calculator h2 {
+        font-size: 1.6em;
+    }
+
+    .ski-pole-calculator #feetInput,
+    .ski-pole-calculator #inchesInput,
+    .ski-pole-calculator #heightCm {
+        width: 2.2em;
+        font-size: 1.2em;
+    }
+
+    .ski-pole-calculator .result-label {
+        font-size: 1em;
+    }
+
+    .ski-pole-calculator #finalLength {
+        font-size: 1.8em;
+    }
+
+    .ski-pole-calculator .arrow {
+        font-size: 1.8em;
+    }
+}
+
+.product-card {
+    color: black;  /* Maintain text color */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: white;
+    height: 180px !important;  /* Fixed height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    font-family: 'Raleway', sans-serif;
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem !important;  /* Consistent padding */
+    text-align: center !important;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.product-card h3 {
+    color: #000;
+    font-size: clamp(0.5rem, 1vw, 0.9rem);  /* Reduced size range */
+    margin-bottom: 0.5em;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.product-card img {
+    height: 100px !important;  /* Fixed height */
+    width: auto !important;    /* Maintain aspect ratio */
+    object-fit: contain !important;
+    margin-top: auto;
+    max-width: 100% !important;  /* Prevent overflow */
+}
+
+/* Additional control for very small screens */
+@media (max-width: 480px) {
+    .product-card img {
+        height: 80px !important;  /* Slightly smaller on mobile */
+    }
+}
+
+@media (max-width: 350px) {
+    .product-card img {
+        height: 70px !important;  /* Even smaller on very small screens */
+    }
+}
+
+/* Remove the media query that changes layout */
+/* Instead, add responsive adjustments */
+@media (max-width: 768px) {
+    .product-card {
+        padding: 0.5em;  /* Reduce padding on small screens */
+    }
+
+    .product-card h3 {
+        margin-bottom: 0.3em;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-card {
+        padding: 0.3em;  /* Further reduce padding on very small screens */
+    }
+}
+
+/* Ensure headings also use Raleway */
+.ski-pole-calculator h2,
+.product-card .product-title {
+    font-family: 'Raleway', sans-serif;
+    /* ... rest of your existing styles ... */
+}
+
+.productDisplayHeader {
+    font-family: 'Raleway', sans-serif;
+    font-size: clamp(1rem, 2vw, 1.5rem);  /* Responsive, smaller font size */
+    text-align: center;
+    margin-bottom: 1em;
+    color: #000;
+    font-weight: 500;  /* Medium weight */
+}
+
+/* Media queries for further adjustments */
+@media (max-width: 768px) {
+    .productDisplayHeader {
+        font-size: clamp(0.9rem, 1.8vw, 1.3rem);
+        margin-bottom: 0.8em;
+    }
+}
+
+@media (max-width: 480px) {
+    .productDisplayHeader {
+        font-size: clamp(0.8rem, 1.5vw, 1.1rem);
+        margin-bottom: 0.6em;
+    }
+}
+
+.product-card .product-title {
+    font-size: 0.8rem !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;  /* Force block display */
+    position: relative !important;  /* Reset any positioning */
+    left: 0 !important;  /* Reset any offset */
+}
+
+@media (max-width: 768px) {
+    .product-card .product-title {
+        font-size: 0.6rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-card .product-title {
+        font-size: 0.5rem !important;
+    }
+}
+
+@media (max-width: 350px) {
+    .product-card {
+        padding: 0.3rem !important;  /* Slightly reduced padding */
+    }
+
+    .product-card .product-title {
+        font-size: 0.45rem !important;
+        width: 100% !important;
+        left: 0 !important;
+        transform: none !important;  /* Remove any transforms */
+        padding-top: 50px;
+    }
+    .product-card img{
+        padding-bottom: 10px;
+    }
+}
