@@ -236,8 +236,8 @@
         head.appendChild(step.value);
         head.appendChild(svg(CHEVRON, 'gs-b-chev'));
         head.addEventListener('click', function () {
-            openKey = openKey === step.key ? null : step.key;
-            render();
+            if (openKey === step.key) { openKey = null; render(); }
+            else openStep(step.key, true);
         });
         main.insertBefore(head, main.firstChild);
         step.head = head;
@@ -264,12 +264,17 @@
         if (!scroll) return;
         var step = stepByKey(key);
         if (!step) return;
-        // Only scroll when the step's header is off screen. The step just closed folds up, so
-        // the next one usually lands where the shopper is already looking, and scrolling anyway
-        // pushed the pole photo out of view on desktop (Andrew, 2026-10-09).
-        var rect = step.head.getBoundingClientRect();
-        if (rect.top >= 0 && rect.bottom <= window.innerHeight - 80) return;
-        var top = rect.top + window.pageYOffset - 70;
+        // Bring the whole step into view, but only when it doesn't already fit: if it runs off
+        // the bottom (the strap grid does) or its header is above the screen, scroll its header
+        // to just below the top. The desktop photo is pinned, so it stays in view (Andrew,
+        // 2026-10-09). On phones, leave room for the pinned bar at the bottom.
+        var head = step.head.getBoundingClientRect();
+        var parts = step.found.filter(function (module) { return module && module.offsetHeight; });
+        var bottom = parts.length ? parts[parts.length - 1].getBoundingClientRect().bottom : head.bottom;
+        var phone = window.innerWidth <= PHONE_WIDTH;
+        var room = window.innerHeight - (phone ? 96 : 16);
+        if (head.top >= 0 && bottom <= room) return;
+        var top = head.top + window.pageYOffset - (phone ? 16 : 20);
         window.scrollTo({ top: top, behavior: 'smooth' });
     }
 
