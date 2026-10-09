@@ -896,10 +896,13 @@
         options.appendChild(rail);
     }
 
-    // The part of the photo the rail shows: the pole plus the near part of the strap loop.
-    // [centre x, top y, bottom y] as fractions of the photo, and how much of its width fits.
-    var RAIL_FOCUS = [0.57, 0.02, 0.97];
-    var RAIL_SPAN = 0.34;
+    // The part of the photo the rail shows: the whole pole, basket and strap loop. In the
+    // Original photo the Medium basket spans 0.39-0.59 of its width (Huge a little more) and
+    // a Mtn strap reaches 0.81, so 0.35-0.83 shows all of them (Andrew, 2026-10-09: the
+    // basket and strap were cut off). [centre x, top y, bottom y] as fractions of the photo,
+    // and how much of its width fits.
+    var RAIL_FOCUS = [0.59, 0.01, 1.0];
+    var RAIL_SPAN = 0.48;
 
     function updateRail() {
         if (!rail || !enabled() || window.innerWidth > PHONE_WIDTH) return;
@@ -1025,11 +1028,7 @@
                 }
                 step.blackNote.hidden = !(size && size.blackOnly);
                 if (colourSelect) {
-                    // Phones hide the colour's name (builder.css): the dot shows it, and the
-                    // narrow header can't fit "Green · Medium" beside the title.
-                    setValue(step, [dot(swatchColour(colourSelect.value, true)),
-                        size ? el('span', 'gs-b-value-colour', colourSelect.value + ' · ') : colourSelect.value,
-                        size ? size.name : null,
+                    setValue(step, [dot(swatchColour(colourSelect.value, true)), colourSelect.value + (size ? ' · ' + size.name : ''),
                         upcharge(chosenPrice(colourSelect)), upcharge(chosenPrice(sizeSelect))]);
                 }
             }
@@ -1058,7 +1057,12 @@
                 var price = $('.gs-engraving-price');
                 drawEngraving(step);
                 done = letters > 0;
-                setValue(step, [done ? (price ? price.textContent.replace(/[()+]/g, '').trim() : letters + ' letters') : 'Optional']);
+                // Same look as Cork or a Mtn strap: the choice, then the green price badge
+                // (Andrew, 2026-10-09). The price is grasssticks.js's own "($14)" note.
+                var cost = price ? price.textContent.replace(/[()+\s]/g, '') : '';
+                setValue(step, done
+                    ? [letters + (letters === 1 ? ' letter' : ' letters'), upcharge(cost ? '+' + cost : '')]
+                    : ['Optional']);
             }
             step.head.classList.toggle('gs-b-head--done', done);
         });

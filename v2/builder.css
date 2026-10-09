@@ -201,15 +201,40 @@ html[data-gs-builder="on"] .ec-store .gs-b-thumb {
     flex: none !important;
 }
 
-/* Phones: the options column is narrower (the pole rides beside it), so the step summaries
-   drop what the eye doesn't need: the basket colour's name (its dot shows it) and, on the
-   narrowest phones, the strap's little picture. */
+/* Phones: the options column is narrower (the pole rides beside it), too narrow for a
+   title and a summary like "Mount Tam +$19.99" side by side. So the summary goes on a
+   second line under the title, starting under it (Andrew, 2026-10-09: things cut off). */
 @media (max-width: 768px) {
-    html[data-gs-builder="on"] .ec-store .gs-b-value-colour {
-        display: none !important;
+    html[data-gs-builder="on"] .ec-store .gs-b-head {
+        grid-template-columns: 24px minmax(0, 1fr) 12px !important;
+        row-gap: 2px !important;
+        padding: 10px 0 !important;
+    }
+
+    html[data-gs-builder="on"] .ec-store .gs-b-num {
+        grid-column: 1 !important;
+        grid-row: 1 / span 2 !important;
+    }
+
+    html[data-gs-builder="on"] .ec-store .gs-b-title {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+    }
+
+    html[data-gs-builder="on"] .ec-store .gs-b-value {
+        grid-column: 2 !important;
+        grid-row: 2 !important;
+        justify-self: start !important;
+        font-size: 13px !important;
+    }
+
+    html[data-gs-builder="on"] .ec-store .gs-b-chev {
+        grid-column: 3 !important;
+        grid-row: 1 / span 2 !important;
     }
 }
 
+/* The narrowest phones: the strap's little picture goes; its name and price stay. */
 @media (max-width: 400px) {
     html[data-gs-builder="on"] .ec-store .gs-b-value .gs-b-thumb {
         display: none !important;
