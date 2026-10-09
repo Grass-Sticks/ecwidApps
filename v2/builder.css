@@ -676,7 +676,7 @@ html[data-gs-builder="on"] .ec-store .gs-b-bamboo span {
     font-family: Cavolini, 'Comic Sans MS', 'Comic Neue', sans-serif !important;
     color: rgba(40, 18, 4, 0.9) !important;
     mix-blend-mode: multiply !important;
-    font-size: 18px !important;
+    font-size: 22px !important;
     font-weight: 400 !important; /* the real engraving is Cavolini regular, not bold */
     letter-spacing: 0.02em !important;
     text-transform: none !important;
