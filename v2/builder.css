@@ -415,6 +415,28 @@ html[data-gs-builder="on"] .ec-store .gs-b-size svg {
     width: 30px !important;
 }
 
+/* Real basket photos, cut from the Extra Baskets product's pictures (US 55221294) at one
+   common scale, so the sizes compare truthfully. */
+html[data-gs-builder="on"] .ec-store .gs-b-size-pic {
+    display: block !important;
+    width: 100% !important;
+    max-width: 72px !important;
+    aspect-ratio: 6 / 5 !important;
+    background: center / contain no-repeat !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-size-pic[data-basket="tiny"] {
+    background-image: url('builder-photos/basket-tiny.png') !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-size-pic[data-basket="medium"] {
+    background-image: url('builder-photos/basket-medium.png') !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-size-pic[data-basket="huge"] {
+    background-image: url('builder-photos/basket-huge.png') !important;
+}
+
 html[data-gs-builder="on"] .ec-store .gs-b-size b {
     font-size: 14px !important;
 }

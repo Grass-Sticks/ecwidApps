@@ -389,8 +389,17 @@
                 var card = el('button', 'gs-b-size');
                 card.type = 'button';
                 card.dataset.value = option.value;
+                // The real basket, cut from the Extra Baskets photos (Andrew, 2026-10-09); the
+                // picture itself is set in builder.css. A size with no photo gets a drawn one.
+                var kind = /tiny/i.test(option.value) ? 'tiny'
+                    : /huge|powder/i.test(option.value) ? 'huge'
+                    : /medium/i.test(option.value) ? 'medium' : null;
                 var radius = Math.max(4, Math.min(13, info.inches * 2.6));
-                card.appendChild(svg('<svg viewBox="0 0 30 26" aria-hidden="true"><line x1="15" y1="0" x2="15" y2="26" stroke="#b9781f" stroke-width="2"/><ellipse cx="15" cy="16" rx="' + radius + '" ry="' + (radius * 0.38) + '" fill="#333"/></svg>'));
+                if (kind) {
+                    var picture = el('i', 'gs-b-size-pic');
+                    picture.setAttribute('data-basket', kind);
+                    card.appendChild(picture);
+                } else card.appendChild(svg('<svg viewBox="0 0 30 26" aria-hidden="true"><line x1="15" y1="0" x2="15" y2="26" stroke="#b9781f" stroke-width="2"/><ellipse cx="15" cy="16" rx="' + radius + '" ry="' + (radius * 0.38) + '" fill="#333"/></svg>'));
                 card.appendChild(el('b', null, info.name));
                 card.appendChild(el('span', null, (info.size ? info.size + ' · ' : '') + (info.blackOnly ? 'black only' : 'all colors')));
                 var price = surchargeIn(option.text);
