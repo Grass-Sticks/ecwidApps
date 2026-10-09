@@ -64,6 +64,9 @@
     // values a product doesn't have is left out on that product. Taken from the most
     // ordered combos in Ecwid (US Mar to Oct 2026 sample, all of Canada since Nov 2025;
     // Andrew, 2026-10-09: "pull from ecwid for now, we can change later").
+    // Switched OFF (Andrew, 2026-10-09: "lets get rid of staff picks. we might bring it back
+    // at some point"). Set to true to bring them back; the list and code are kept.
+    var SHOW_STAFF_PICKS = false;
     var STAFF_PICKS = [
         { name: 'Bluebird Day', grip: 'Blue', basket: 'Blue', strap: 'The Grand' },
         { name: 'Night Shift', grip: 'Black', basket: 'Black', strap: 'Fixed' },
@@ -701,7 +704,7 @@
 
     function buildStaffPicks() {
         var grip = stepByKey('grip');
-        if (!grip || !STAFF_PICKS.length) return;
+        if (!SHOW_STAFF_PICKS || !grip || !STAFF_PICKS.length) return;
         var gripSelect = selectIn(moduleOf(grip));
         var baskets = stepByKey('baskets');
         var basketSelect = baskets && selectIn(baskets.found[0]);
