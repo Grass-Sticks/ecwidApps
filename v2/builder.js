@@ -866,7 +866,11 @@
             var layer = el('img', 'gs-b-stage-strap');
             layer.src = strap.getAttribute('src');
             layer.alt = '';
-            ['left', 'top', 'width', 'height'].forEach(function (side) { layer.style[side] = strap.style[side]; });
+            // "important" so builder.css's catch-all for the stage's pictures (left 0, full
+            // size) can't pull the strap into the corner at the wrong size.
+            ['left', 'top', 'width', 'height'].forEach(function (side) {
+                layer.style.setProperty(side, strap.style[side], 'important');
+            });
             stage.appendChild(layer);
         }
         box.appendChild(stage);

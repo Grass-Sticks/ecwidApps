@@ -849,11 +849,6 @@ html[data-gs-builder="on"] .gs-b-stage img {
     margin: 0 !important;
 }
 
-html[data-gs-builder="on"] .gs-b-stage .gs-b-stage-strap {
-    width: auto !important;
-    height: auto !important;
-}
-
 html[data-gs-builder="on"] .gs-b-bar-text {
     display: grid !important;
     min-width: 0 !important;
