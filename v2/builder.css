@@ -239,14 +239,30 @@ html[data-gs-builder="on"] .ec-store .gs-b-link {
     cursor: pointer !important;
 }
 
+/* "Next: Baskets →" as a real button (Andrew, 2026-10-09: "just looks like text"). Outlined,
+   so it doesn't compete with the solid green "Find my length" or the black Add to Cart;
+   fills in on hover. */
 html[data-gs-builder="on"] .ec-store .gs-b-next {
-    display: block !important;
-    margin-top: 4px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-top: 6px !important;
+    padding: 8px 16px !important;
+    background: #fff !important;
+    border: 1.5px solid var(--gs-b-pine) !important;
+    border-radius: 6px !important;
+    color: var(--gs-b-pine) !important;
     text-decoration: none !important;
+    transition: background 0.12s, color 0.12s !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-next:hover {
+    background: var(--gs-b-pine) !important;
+    color: #fff !important;
 }
 
 html[data-gs-builder="on"] .ec-store .gs-b-next::after {
-    content: ' \2192' !important;
+    content: '\2192' !important;
 }
 
 /* ---------- Colour swatches ---------- */
