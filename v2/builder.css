@@ -23,7 +23,7 @@ html[data-gs-builder="on"] {
    the three become a grid: photo and options side by side, the description full width below,
    and the photo sticky so it stays in view while the shopper chooses. builder.js sets
    --gs-b-photo-top so the photo leaves with the options instead of sliding over the
-   description. Phones keep Ecwid's stacked layout and get the pinned bar instead. */
+   description. Phones keep Ecwid's stacked layout, with a slim pole beside the options. */
 @media (min-width: 769px) {
     html[data-gs-builder="on"] .ec-store .product-details.product-details--layout-sidebar-right {
         display: grid !important;
@@ -792,45 +792,65 @@ html[data-gs-builder="on"] .ec-store .gs-b-pick-words span {
     color: var(--gs-b-muted) !important;
 }
 
-/* ---------- Pinned bar (phones) ---------- */
+/* ---------- Pole beside the options (phones) ---------- */
 
-/* Outside .ec-store (it hangs off <body>), so scoped by the html attribute alone. */
-html[data-gs-builder="on"] .gs-b-bar {
-    position: fixed !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    z-index: 2147482000 !important;
-    display: grid !important;
-    grid-template-columns: 50px 50px minmax(0, 1fr) auto !important;
-    gap: 8px !important;
-    align-items: center !important;
-    padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px)) !important;
-    background: #fff !important;
-    border-top: 1px solid var(--gs-b-line) !important;
-    box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.08) !important;
-    font-family: inherit !important;
-    color: var(--gs-b-ink) !important;
-    animation: gs-b-rise 0.2s ease-out !important;
-}
-
-html[data-gs-builder="on"] .gs-b-bar[hidden] {
+/* A slim copy of the pole photo down the right edge, so each choice shows on the pole while
+   the shopper is still choosing (Andrew, 2026-10-09). The options make room for it; the rail
+   spans the options and its pole is sticky inside it, so it stays in view while the options
+   are on screen and leaves with them (never over Add to Cart or the description).
+   builder.js sizes the pole and fades it in once the big photo has scrolled away. */
+html[data-gs-builder="on"] .ec-store .gs-b-rail {
     display: none !important;
 }
 
-@keyframes gs-b-rise {
-    from { transform: translateY(100%); }
-    to { transform: none; }
-}
+@media (max-width: 768px) {
+    /* Squarespace's page wrapper hides overflow on phones, which stops anything inside it
+       from being sticky. "clip" still trims sideways overflow but lets sticky work. */
+    html[data-gs-builder="on"] #siteWrapper {
+        overflow-x: clip !important;
+        overflow-y: visible !important;
+    }
 
-html[data-gs-builder="on"] .gs-b-crop {
-    position: relative !important;
-    width: 50px !important;
-    height: 62px !important;
-    overflow: hidden !important;
-    border: 1px solid var(--gs-b-line) !important;
-    border-radius: 8px !important;
-    background: #fff !important;
+    html[data-gs-builder="on"] .ec-store .product-details__product-options {
+        position: relative !important;
+        padding-right: 84px !important;
+    }
+
+    html[data-gs-builder="on"] .ec-store .gs-b-rail {
+        display: block !important;
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 76px !important;
+        margin: 0 !important;
+        pointer-events: none !important;
+    }
+
+    html[data-gs-builder="on"] .ec-store .gs-b-rail-pole {
+        position: sticky !important;
+        top: 56px !important;
+        width: 100% !important;
+        overflow: hidden !important;
+        background: #fff !important;
+        border: 1px solid var(--gs-b-line) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06) !important;
+        opacity: 0 !important;
+        transition: opacity 0.2s !important;
+    }
+
+    html[data-gs-builder="on"] .ec-store .gs-b-rail[data-gs-shown] .gs-b-rail-pole {
+        opacity: 1 !important;
+    }
+
+    /* Ecwid's floating cart button sits on the right edge, across the pole; while the pole
+       shows, it moves to the top corner, just above it. */
+    html[data-gs-builder="on"][data-gs-rail] .ec-cart-widget {
+        top: 12px !important;
+        bottom: auto !important;
+        transform: none !important;
+    }
 }
 
 html[data-gs-builder="on"] .gs-b-stage {
@@ -849,49 +869,6 @@ html[data-gs-builder="on"] .gs-b-stage img {
     margin: 0 !important;
 }
 
-html[data-gs-builder="on"] .gs-b-bar-text {
-    display: grid !important;
-    min-width: 0 !important;
-    line-height: 1.25 !important;
-}
-
-html[data-gs-builder="on"] .gs-b-bar-price {
-    font-size: 17px !important;
-    font-variant-numeric: tabular-nums !important;
-}
-
-html[data-gs-builder="on"] .gs-b-bar-summary {
-    font-size: 11px !important;
-    color: var(--gs-b-muted) !important;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 2 !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
-}
-
-html[data-gs-builder="on"] .gs-b-bar-button {
-    margin: 0 !important;
-    padding: 12px 14px !important;
-    background: #222 !important;
-    border: 0 !important;
-    border-radius: 8px !important;
-    color: #fff !important;
-    font: inherit !important;
-    font-size: 14px !important;
-    font-weight: 700 !important;
-    white-space: nowrap !important;
-    cursor: pointer !important;
-}
-
-html[data-gs-builder="on"] .gs-b-bar-button--need {
-    background: #6b6b6b !important;
-}
-
-/* Room at the bottom of the page so the bar never covers the last of it. */
-html[data-gs-builder="on"][data-gs-bar] body {
-    padding-bottom: 86px !important;
-}
-
 /* ---------- Focus and motion ---------- */
 
 html[data-gs-builder="on"] .gs-b-head:focus-visible,
@@ -903,14 +880,12 @@ html[data-gs-builder="on"] .gs-b-finder-toggle:focus-visible,
 html[data-gs-builder="on"] .gs-b-next:focus-visible,
 html[data-gs-builder="on"] .gs-b-use:focus-visible,
 html[data-gs-builder="on"] .gs-b-pick:focus-visible,
-html[data-gs-builder="on"] .gs-b-picks-title:focus-visible,
-html[data-gs-builder="on"] .gs-b-bar-button:focus-visible {
+html[data-gs-builder="on"] .gs-b-picks-title:focus-visible {
     outline: 2px solid rgba(135, 186, 218, 1) !important;
     outline-offset: 2px !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    html[data-gs-builder="on"] .gs-b-bar,
     html[data-gs-builder="on"] .gs-b-chip,
     html[data-gs-builder="on"] .gs-b-chev {
         animation: none !important;

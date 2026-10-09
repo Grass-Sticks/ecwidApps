@@ -5,9 +5,9 @@
  * Length, Engraving): colour swatches instead of the grip and basket dropdowns, basket
  * size cards, a picture grid of straps, length with the unit worked out from the number
  * (written into the order, "48" -> "48 inches") and a height-to-length finder,
- * and a live preview of the engraving. On phones a bar pinned to the bottom shows the
- * grip end and the basket end of the pole, the price and Add to Cart. "Staff picks" set
- * a whole combo with one tap.
+ * and a live preview of the engraving. The pole photo stays in view beside the options
+ * (desktop: the photo itself; phones: a slim copy down the right edge). "Staff picks" set
+ * a whole combo with one tap (switched off for now).
  *
  * Ecwid stays in charge. Its own dropdowns, radio buttons and text boxes stay on the
  * page, hidden; every swatch and card here just picks the matching Ecwid choice, so
@@ -34,7 +34,7 @@
     var BUILDER_PRODUCTS = [865875809, 865862655];
 
     var CANADA_STORE_ID = 125951011;
-    var PHONE_WIDTH = 768; // the pinned bar shows at this width and narrower
+    var PHONE_WIDTH = 768; // the pole beside the options shows at this width and narrower
 
     // Sampled from the grip and basket product photos (US Original, 2026-10-09).
     // 'cork' and 'clear' are drawn as textures in builder.css.
@@ -184,7 +184,8 @@
         });
         document.documentElement.removeAttribute('data-gs-builder');
         document.documentElement.style.removeProperty('--gs-b-photo-top');
-        setBarShown(false);
+        rail = null;
+        document.documentElement.removeAttribute('data-gs-rail');
         steps = [];
     }
 
@@ -225,7 +226,7 @@
             if (step.key === 'engraving') buildEngraving(step);
         });
         buildStaffPicks();
-        buildBar();
+        buildRail(options);
         if (!openKey || !steps.some(function (s) { return s.key === openKey; })) {
             openKey = steps.length ? steps[0].key : null;
         }
@@ -287,13 +288,12 @@
         // can make that happen while the shopper is scrolled down; then the top of the pole
         // was cut off. So never scroll down that far, and scroll back up if it already
         // happened, keeping the step's header on screen.
-        // Phones leave room for the pinned bar at the bottom.
         var head = step.head.getBoundingClientRect();
         var parts = step.found.filter(function (module) { return module && module.offsetHeight; });
         var bottom = parts.length ? parts[parts.length - 1].getBoundingClientRect().bottom : head.bottom;
         var phone = window.innerWidth <= PHONE_WIDTH;
         var pad = phone ? 16 : 20;
-        var room = window.innerHeight - (phone ? 96 : 16);
+        var room = window.innerHeight - 16;
         var delta = 0;
         if (head.top < 0) delta = head.top - pad;
         else if (bottom > room) delta = Math.min(bottom - room, head.top - pad);
@@ -800,12 +800,12 @@
         })(0);
     }
 
-    // ------------------------------------------------------------------ pinned bar (phones)
+    // ------------------------------------------------------------------ pole beside the options (phones)
 
     // The first gallery photo (the one Ecwid swaps for grip and basket colour) as
     // { src, w, h }, or null until it is known. On desktop it is an <img>; on phones Ecwid
     // shows a swipeable gallery that draws it as a background picture instead, so its size
-    // is found by loading it once (then the bar is redrawn).
+    // is found by loading it once (then the pole beside the options is redrawn).
     var photoSizes = {};
 
     function mainPhoto() {
@@ -826,16 +826,12 @@
             var probe = new Image();
             probe.onload = function () {
                 photoSizes[url] = { w: probe.naturalWidth, h: probe.naturalHeight };
-                drawBar();
+                drawRail();
             };
             probe.src = url;
             return null;
         }
         return size === 'loading' ? null : { src: url, w: size.w, h: size.h };
-    }
-
-    function buyButton() {
-        return $('.details-product-purchase__add-to-bag button');
     }
 
     // A small window onto part of the pole photo: the whole photo (plus the Mtn strap layer
@@ -876,45 +872,54 @@
         box.appendChild(stage);
     }
 
-    var bar = null;
+    // Phones: the pole rides down the right edge beside the options, so every choice can be
+    // seen on it without scrolling back up (Andrew, 2026-10-09; it replaced a pinned bottom bar
+    // that repeated the step summaries). builder.css makes the room for it and keeps it in view
+    // (sticky) while the options are on screen; it leaves with them, so it never covers the
+    // Add to Cart or the description. It fades in once the big photo has scrolled away.
+    var rail = null;
 
-    function buildBar() {
-        if (bar && bar.parentNode) bar.parentNode.removeChild(bar);
-        bar = el('div', 'gs-b gs-b-bar');
-        bar.setAttribute('aria-hidden', 'true'); // Ecwid's own price and button are the accessible ones
-        bar.hidden = true;
-        bar.gripCrop = el('div', 'gs-b-crop');
-        bar.basketCrop = el('div', 'gs-b-crop');
-        var text = el('div', 'gs-b-bar-text');
-        bar.price = el('b', 'gs-b-bar-price');
-        bar.summary = el('span', 'gs-b-bar-summary');
-        text.appendChild(bar.price);
-        text.appendChild(bar.summary);
-        bar.button = el('button', 'gs-b-bar-button', 'Add to Cart');
-        bar.button.type = 'button';
-        bar.button.tabIndex = -1;
-        bar.button.addEventListener('click', addToCart);
-        bar.appendChild(bar.gripCrop);
-        bar.appendChild(bar.basketCrop);
-        bar.appendChild(text);
-        bar.appendChild(bar.button);
-        document.body.appendChild(bar);
+    function buildRail(options) {
+        rail = el('div', 'gs-b gs-b-rail');
+        rail.setAttribute('aria-hidden', 'true'); // a copy of the photo above
+        rail.pole = el('div', 'gs-b-rail-pole');
+        rail.appendChild(rail.pole);
+        options.appendChild(rail);
+    }
+
+    // The part of the photo the rail shows: the pole plus the near part of the strap loop.
+    // [centre x, top y, bottom y] as fractions of the photo, and how much of its width fits.
+    var RAIL_FOCUS = [0.57, 0.02, 0.97];
+    var RAIL_SPAN = 0.34;
+
+    function updateRail() {
+        if (!rail || !enabled() || window.innerWidth > PHONE_WIDTH) return;
+        var gallery = $('.details-gallery');
+        var shown = !gallery || gallery.getBoundingClientRect().bottom < 60;
+        if (rail.hasAttribute('data-gs-shown') === shown) return;
+        rail.toggleAttribute('data-gs-shown', shown);
+        // builder.css moves Ecwid's floating cart button above the pole while it shows.
+        document.documentElement.toggleAttribute('data-gs-rail', shown);
+        if (shown) drawRail();
+    }
+
+    function drawRail() {
+        if (!rail || !rail.hasAttribute('data-gs-shown')) return;
+        var photo = mainPhoto();
+        var box = rail.pole;
+        var width = box.clientWidth;
+        if (!photo || !width) return;
+        // As tall as the pole is at this width, but no taller than the screen (less the cart
+        // button above it and the chat button below) or the options beside it.
+        var tall = width / RAIL_SPAN * (photo.h / photo.w) * (RAIL_FOCUS[2] - RAIL_FOCUS[1]);
+        var room = Math.min(window.innerHeight - 140, rail.clientHeight - 8);
+        box.style.height = Math.max(120, Math.min(tall, room)) + 'px';
+        drawCrop(box, RAIL_FOCUS);
     }
 
     function lengthMissing() {
         var input = lengthInput();
         return !!input && !input.value.trim();
-    }
-
-    function addToCart() {
-        if (lengthMissing()) {
-            openStep('length', true);
-            var input = lengthInput();
-            if (input) setTimeout(function () { input.focus({ preventScroll: true }); }, 400);
-            return;
-        }
-        var button = buyButton();
-        if (button) button.click();
     }
 
     // Ecwid's real Add to Cart, clicked while the Length step is closed: open it so Ecwid's
@@ -924,47 +929,6 @@
         if (!event.target.closest('.details-product-purchase__add-to-bag')) return;
         if (lengthMissing()) openStep('length', false);
     }, true);
-
-    // Things fixed to the bottom right corner (the chat button) move up while the bar shows.
-    var lifted = [];
-
-    function setBarShown(show) {
-        if (!bar) return;
-        if (bar.hidden === !show) return;
-        bar.hidden = !show;
-        document.documentElement.toggleAttribute('data-gs-bar', show);
-        if (show) {
-            var height = bar.offsetHeight + 8;
-            lifted = $all('body > *').filter(function (node) {
-                if (node === bar) return false;
-                var style = getComputedStyle(node);
-                if (style.position !== 'fixed' || node.offsetWidth > 120) return false;
-                return parseFloat(style.bottom) < 100 && parseFloat(style.right) >= 0 && parseFloat(style.right) < 100;
-            });
-            lifted.forEach(function (node) {
-                node.dataset.gsLift = node.style.transform || '';
-                node.style.transform = 'translateY(-' + height + 'px)';
-            });
-            drawBar();
-        } else {
-            lifted.forEach(function (node) { node.style.transform = node.dataset.gsLift || ''; delete node.dataset.gsLift; });
-            lifted = [];
-        }
-    }
-
-    function updateBarVisibility() {
-        if (!bar || !enabled() || !steps.length) { setBarShown(false); return; }
-        if (window.innerWidth > PHONE_WIDTH) { setBarShown(false); return; }
-        var options = $('.product-details__product-options');
-        var gallery = $('.details-gallery');
-        var buy = $('.details-product-purchase__add-to-bag');
-        if (!options) { setBarShown(false); return; }
-        var view = window.innerHeight;
-        var galleryGone = !gallery || gallery.getBoundingClientRect().bottom < 60;
-        var optionsHere = options.getBoundingClientRect().top < view * 0.75;
-        var buyShowing = buy && buy.getBoundingClientRect().top < view - 20;
-        setBarShown(galleryGone && optionsHere && !buyShowing);
-    }
 
     // Desktop: builder.css pins the photo (position: sticky) beside the options so it stays in
     // view while choosing (Andrew, 2026-10-09). Sticky alone would carry it on over the
@@ -983,34 +947,9 @@
     window.addEventListener('scroll', function () {
         if (scrollQueued) return;
         scrollQueued = true;
-        requestAnimationFrame(function () { scrollQueued = false; updateBarVisibility(); pinPhoto(); });
+        requestAnimationFrame(function () { scrollQueued = false; updateRail(); pinPhoto(); });
     }, { passive: true });
-    window.addEventListener('resize', function () { updateBarVisibility(); pinPhoto(); });
-
-    function drawBar() {
-        if (!bar || bar.hidden) return;
-        var price = $('.product-details__product-price .details-product-price__value');
-        bar.price.textContent = price ? price.textContent.trim() : '';
-        bar.summary.textContent = summaryText();
-        var missing = lengthMissing();
-        bar.button.textContent = missing ? 'Add length' : 'Add to Cart';
-        bar.button.classList.toggle('gs-b-bar-button--need', missing);
-        drawCrop(bar.gripCrop, [0.54, 0.0, 0.2]);
-        drawCrop(bar.basketCrop, [0.47, 0.86, 1.0]);
-    }
-
-    function summaryText() {
-        var parts = [];
-        var grip = stepByKey('grip');
-        var gripSelect = grip && selectIn(moduleOf(grip));
-        if (gripSelect) parts.push(gripSelect.value + ' grip');
-        var baskets = stepByKey('baskets');
-        var basketSelect = baskets && selectIn(baskets.found[0]);
-        if (basketSelect) parts.push(basketSelect.value.toLowerCase() + ' baskets');
-        var strap = checkedStrap();
-        if (strap) parts.push(strap === 'None' ? 'no strap' : strap + ' strap');
-        return parts.join(', ');
-    }
+    window.addEventListener('resize', function () { updateRail(); drawRail(); pinPhoto(); });
 
     // ------------------------------------------------------------------ drawing
 
@@ -1110,8 +1049,8 @@
             }
             step.head.classList.toggle('gs-b-head--done', done);
         });
-        updateBarVisibility();
-        drawBar();
+        updateRail();
+        drawRail();
         pinPhoto();
     }
 
@@ -1130,7 +1069,7 @@
         if (!enabled() || !event.target.closest) return;
         if (event.target.closest('[data-gs-step]')) { foldPicks(); renderSoon(); }
     });
-    // Photos load after a choice; redraw the bar's crops when the main one does.
+    // Photos load after a choice; redraw the pole beside the options when the main one does.
     document.addEventListener('load', function (event) {
         if (enabled() && event.target && event.target.tagName === 'IMG' && event.target.closest && event.target.closest('.details-gallery')) renderSoon();
     }, true);
