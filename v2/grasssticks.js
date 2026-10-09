@@ -252,6 +252,38 @@ Ecwid.OnAPILoaded.add(function () {
         return layer;
     }
 
+    // On phones Ecwid shows a swipeable gallery instead, where the first photo is a smaller
+    // copy drawn as a background picture ("contain", centred) on a link. The original photo's
+    // size is only on the link's wrapper: its aspect-ratio (width / height) and its
+    // min-height ("min(6972px, 100%)"). The strap goes in a frame the size of the drawn
+    // photo, so the same box fractions fit.
+    function phoneStrapFrame(link) {
+        var wrapper = link.parentNode;
+        var ratio = /^\s*([\d.]+)\s*\/\s*([\d.]+)/.exec(wrapper.style.aspectRatio || '');
+        var tall = /([\d.]+)px/.exec(wrapper.style.minHeight || '');
+        if (!ratio || !tall) return null;
+        var photoH = parseFloat(tall[1]);
+        var photoW = Math.round(photoH * parseFloat(ratio[1]) / parseFloat(ratio[2]));
+        if (String(photoW) !== STRAP_PHOTO_SIZE.width || String(photoH) !== STRAP_PHOTO_SIZE.height) return null;
+        var boxW = link.clientWidth;
+        var boxH = link.clientHeight;
+        if (!boxW || !boxH) return null;
+        var scale = Math.min(boxW / photoW, boxH / photoH);
+        var drawnW = photoW * scale;
+        var drawnH = photoH * scale;
+        var frame = link.querySelector('.gs-strap-frame');
+        if (!frame) {
+            frame = document.createElement('span');
+            frame.className = 'gs-strap-frame';
+            link.appendChild(frame);
+        }
+        frame.style.left = ((boxW - drawnW) / 2 / boxW * 100) + '%';
+        frame.style.top = ((boxH - drawnH) / 2 / boxH * 100) + '%';
+        frame.style.width = (drawnW / boxW * 100) + '%';
+        frame.style.height = (drawnH / boxH * 100) + '%';
+        return frame;
+    }
+
     function updateStrapPhoto() {
         // The first picture in the gallery is the one Ecwid swaps for grip and basket colour.
         var picture = document.querySelector('.details-gallery__main-image-wrapper .details-gallery__photoswipe-index-0');
@@ -266,12 +298,22 @@ Ecwid.OnAPILoaded.add(function () {
             holders.push(picture.parentNode);
             var zoom = picture.parentNode.parentNode.querySelector('.details-gallery__images-zoom');
             if (zoom) holders.push(zoom);
+        } else if (strap && !picture) {
+            var links = document.querySelectorAll('.details-gallery__photoswipe-thumb-index-0 .details-gallery__thumb-img');
+            for (var k = 0; k < links.length; k++) {
+                var frame = phoneStrapFrame(links[k]);
+                if (frame) holders.push(frame);
+            }
         }
 
         var leftOver = document.querySelectorAll('.details-gallery .gs-strap-photo');
         for (var i = 0; i < leftOver.length; i++) {
             if (holders.indexOf(leftOver[i].parentNode) >= 0) continue;
             leftOver[i].parentNode.removeChild(leftOver[i]);
+        }
+        var emptyFrames = document.querySelectorAll('.details-gallery .gs-strap-frame');
+        for (var f = 0; f < emptyFrames.length; f++) {
+            if (holders.indexOf(emptyFrames[f]) < 0) emptyFrames[f].parentNode.removeChild(emptyFrames[f]);
         }
 
         for (var j = 0; j < holders.length; j++) {

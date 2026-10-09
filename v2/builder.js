@@ -786,7 +786,7 @@
         picture.src = src;
         picture.alt = '';
         stage.appendChild(picture);
-        var strap = $('.details-gallery__main-image-wrapper .gs-strap-photo');
+        var strap = $('.details-gallery__main-image-wrapper .gs-strap-photo') || $('.details-gallery .gs-strap-frame .gs-strap-photo');
         if (strap && strap.getAttribute('src')) {
             var layer = el('img', 'gs-b-stage-strap');
             layer.src = strap.getAttribute('src');

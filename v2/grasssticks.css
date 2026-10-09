@@ -363,6 +363,16 @@
     z-index: 1 !important;
 }
 
+/* Phones: the frame matches the photo as drawn inside Ecwid's swipeable gallery link. */
+.ec-size .ec-store .details-gallery .gs-strap-frame {
+    position: absolute !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+}
+
 /* The strap on the normal-size photo sits just under Ecwid's hover zoom (which is z-index 1
    while showing), so the zoom fades in over a Mtn strap instead of the cream one. */
 .ec-size .ec-store .details-gallery__main-image-wrapper .gs-strap-photo {
