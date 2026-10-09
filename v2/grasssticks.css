@@ -342,14 +342,16 @@
 
 /* ---------- Mtn strap on the pole photo ---------- */
 
-/* Laid over the first gallery picture, and over Ecwid's hover zoom of it, by grasssticks.js.
+/* Laid over the first gallery picture, Ecwid's hover zoom of it, and its copy in the
+   full-screen viewer (which sits outside .ec-store), by grasssticks.js.
    Position and size come from the script as percentages of the photo, so it scales with it.
    Clicks go through to Ecwid's own photo viewer. */
 .ec-size .ec-store .details-gallery__main-image-wrapper {
     position: relative !important;
 }
 
-.ec-size .ec-store .details-gallery .gs-strap-photo {
+.ec-size .ec-store .details-gallery .gs-strap-photo,
+.ecwid-pswp .pswp__zoom-wrap .gs-strap-photo {
     position: absolute !important;
     display: block !important;
     max-width: none !important;

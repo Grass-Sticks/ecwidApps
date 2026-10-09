@@ -215,13 +215,32 @@ Ecwid.OnAPILoaded.add(function () {
 
     var currentProductId = null;
 
+    // The chosen strap's picture, or null if it has none or this product isn't listed.
+    function chosenStrapPhoto() {
+        if (STRAP_PHOTO_PRODUCTS.indexOf(currentProductId) < 0) return null;
+        var radio = document.querySelector('input[type="radio"][name="Strap"]:checked');
+        return (radio && STRAP_PHOTOS[radio.value]) || null;
+    }
+
+    function strapLayer(holder, strap) {
+        var layer = holder.querySelector('.gs-strap-photo');
+        if (!layer) {
+            layer = document.createElement('img');
+            layer.className = 'gs-strap-photo';
+            layer.alt = '';
+            layer.setAttribute('aria-hidden', 'true');
+            holder.appendChild(layer);
+        }
+        var src = STRAP_PHOTO_BASE + strap.file;
+        if (layer.getAttribute('src') !== src) layer.setAttribute('src', src);
+        return layer;
+    }
+
     function updateStrapPhoto() {
         // The first picture in the gallery is the one Ecwid swaps for grip and basket colour.
         var picture = document.querySelector('.details-gallery__main-image-wrapper .details-gallery__photoswipe-index-0');
-        var radio = document.querySelector('input[type="radio"][name="Strap"]:checked');
-        var strap = radio && STRAP_PHOTOS[radio.value];
+        var strap = chosenStrapPhoto();
         var fits = strap && picture &&
-            STRAP_PHOTO_PRODUCTS.indexOf(currentProductId) >= 0 &&
             picture.getAttribute('width') === STRAP_PHOTO_SIZE.width &&
             picture.getAttribute('height') === STRAP_PHOTO_SIZE.height;
         // The strap goes on the photo, and again on Ecwid's hover zoom, which is a magnified
@@ -233,23 +252,14 @@ Ecwid.OnAPILoaded.add(function () {
             if (zoom) holders.push(zoom);
         }
 
-        var leftOver = document.querySelectorAll('.gs-strap-photo');
+        var leftOver = document.querySelectorAll('.details-gallery .gs-strap-photo');
         for (var i = 0; i < leftOver.length; i++) {
             if (holders.indexOf(leftOver[i].parentNode) >= 0) continue;
             leftOver[i].parentNode.removeChild(leftOver[i]);
         }
 
         for (var j = 0; j < holders.length; j++) {
-            var layer = holders[j].querySelector('.gs-strap-photo');
-            if (!layer) {
-                layer = document.createElement('img');
-                layer.className = 'gs-strap-photo';
-                layer.alt = '';
-                layer.setAttribute('aria-hidden', 'true');
-                holders[j].appendChild(layer);
-            }
-            var src = STRAP_PHOTO_BASE + strap.file;
-            if (layer.getAttribute('src') !== src) layer.setAttribute('src', src);
+            var layer = strapLayer(holders[j], strap);
             layer.style.left = (strap.box[0] * 100) + '%';
             layer.style.top = (strap.box[1] * 100) + '%';
             layer.style.width = (strap.box[2] * 100) + '%';
@@ -263,6 +273,54 @@ Ecwid.OnAPILoaded.add(function () {
         updateStrapPhoto();
         setTimeout(updateStrapPhoto, 300);
         setTimeout(updateStrapPhoto, 1000);
+    }
+
+    // Clicking the photo opens Ecwid's full-screen viewer (PhotoSwipe), which shows its own
+    // copy of each photo at a pixel size it sets on the picture (and changes when zooming in).
+    // The strap goes inside the same wrapper, so it slides with the photo. Placeholders (the blurry copy shown
+    // while the real one loads) are skipped, and the photo size is checked once it has loaded.
+    function updateViewerStrap() {
+        var strap = chosenStrapPhoto();
+        var pictures = document.querySelectorAll('.pswp__img:not(.pswp__img--placeholder)');
+        var holders = [];
+        for (var i = 0; i < pictures.length; i++) {
+            var picture = pictures[i];
+            if (!strap || String(picture.naturalWidth) !== STRAP_PHOTO_SIZE.width ||
+                String(picture.naturalHeight) !== STRAP_PHOTO_SIZE.height) continue;
+            var width = parseFloat(picture.style.width);
+            var height = parseFloat(picture.style.height);
+            if (!width || !height) continue;
+            var layer = strapLayer(picture.parentNode, strap);
+            layer.style.left = (strap.box[0] * width) + 'px';
+            layer.style.top = (strap.box[1] * height) + 'px';
+            layer.style.width = (strap.box[2] * width) + 'px';
+            layer.style.height = (strap.box[3] * height) + 'px';
+            holders.push(picture.parentNode);
+        }
+        var leftOver = document.querySelectorAll('.pswp .gs-strap-photo');
+        for (var j = 0; j < leftOver.length; j++) {
+            if (holders.indexOf(leftOver[j].parentNode) < 0) leftOver[j].parentNode.removeChild(leftOver[j]);
+        }
+    }
+
+    // The viewer has no event to listen to, so after a click on the gallery, keep the strap
+    // in step a few times a second while the viewer is open (it resizes and swaps photos),
+    // and stop once it closes, or after 3 seconds if it never opened.
+    var viewerTimer = null;
+
+    function watchViewer() {
+        if (viewerTimer) clearInterval(viewerTimer);
+        var started = Date.now();
+        var seenOpen = false;
+        viewerTimer = setInterval(function () {
+            var open = !!document.querySelector('.pswp--open');
+            if (open) seenOpen = true;
+            if ((!open && seenOpen) || (!seenOpen && Date.now() - started > 3000)) {
+                clearInterval(viewerTimer);
+                viewerTimer = null;
+            }
+            updateViewerStrap();
+        }, 250);
     }
 
     // ------------------------------------------------------------------ engraving
@@ -637,6 +695,12 @@ Ecwid.OnAPILoaded.add(function () {
             if (type === 'change') switchToColourSize(target);
         }, true);
     });
+
+    // A click on the gallery may open the full-screen viewer. Ecwid's gallery stops the click
+    // from bubbling up, so this one listens on the way down (capture).
+    document.addEventListener('click', function (event) {
+        if (event.target && event.target.closest && event.target.closest('.details-gallery')) watchViewer();
+    }, true);
 
     document.addEventListener('click', function (event) {
         if (!event.target || !event.target.closest) return;
