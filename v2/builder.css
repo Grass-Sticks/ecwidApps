@@ -91,7 +91,7 @@ html[data-gs-builder="on"] .ec-store [data-gs-step="strap"] .gs-strap-toggle {
 /* A closed step shows only its header. */
 html[data-gs-builder="on"] .ec-store [data-gs-step][data-gs-open="no"] > .product-details-module__content,
 html[data-gs-builder="on"] .ec-store [data-gs-step][data-gs-open="no"] > .gs-b-body,
-html[data-gs-builder="on"] .ec-store [data-gs-step][data-gs-open="no"] > .gs-b-next,
+html[data-gs-builder="on"] .ec-store [data-gs-step][data-gs-open="no"] > .gs-b-nextrow,
 html[data-gs-builder="on"] .ec-store [data-gs-step][data-gs-open="no"] > .gs-b-engrave,
 html[data-gs-builder="on"] .ec-store [data-gs-step][data-gs-part="extra"][data-gs-open="no"] {
     display: none !important;
@@ -239,30 +239,42 @@ html[data-gs-builder="on"] .ec-store .gs-b-link {
     cursor: pointer !important;
 }
 
-/* "Next: Baskets →" as a real button (Andrew, 2026-10-09: "just looks like text"). Outlined,
-   so it doesn't compete with the solid green "Find my length" or the black Add to Cart;
-   fills in on hover. */
+/* Footer of each step: "Step 2 of 5" on the left, a solid green "Next: Length ›" pill on the
+   right (Andrew, 2026-10-09, option B). The pill shape keeps it distinct from the square
+   "Find my length" button and the black Add to Cart. */
+html[data-gs-builder="on"] .ec-store .gs-b-nextrow {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    margin-top: 10px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-progress {
+    color: var(--gs-b-muted, #6e6e6e) !important;
+    font-size: 13px !important;
+}
+
 html[data-gs-builder="on"] .ec-store .gs-b-next {
     display: inline-flex !important;
     align-items: center !important;
     gap: 6px !important;
-    margin-top: 6px !important;
-    padding: 8px 16px !important;
-    background: #fff !important;
-    border: 1.5px solid var(--gs-b-pine) !important;
-    border-radius: 6px !important;
-    color: var(--gs-b-pine) !important;
+    padding: 9px 16px !important;
+    background: var(--gs-b-pine) !important;
+    border-radius: 999px !important;
+    color: #fff !important;
     text-decoration: none !important;
-    transition: background 0.12s, color 0.12s !important;
+    transition: background 0.12s !important;
 }
 
 html[data-gs-builder="on"] .ec-store .gs-b-next:hover {
-    background: var(--gs-b-pine) !important;
-    color: #fff !important;
+    background: #163a2b !important;
 }
 
 html[data-gs-builder="on"] .ec-store .gs-b-next::after {
-    content: '\2192' !important;
+    content: '\203A' !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
 }
 
 /* ---------- Colour swatches ---------- */
