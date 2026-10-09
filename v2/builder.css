@@ -239,12 +239,12 @@ html[data-gs-builder="on"] .ec-store .gs-b-link {
     cursor: pointer !important;
 }
 
-/* Footer of each step: a solid green "Next: Length ›" pill at the right (Andrew, 2026-10-09).
+/* Footer of each step: a solid green "Next: Length ›" pill at the left (Andrew, 2026-10-09).
    The pill shape keeps it distinct from the square "Find my length" button and the black
    Add to Cart. */
 html[data-gs-builder="on"] .ec-store .gs-b-nextrow {
     display: flex !important;
-    justify-content: flex-end !important;
+    justify-content: flex-start !important;
     margin-top: 10px !important;
 }
 

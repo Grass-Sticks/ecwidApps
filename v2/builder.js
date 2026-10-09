@@ -254,7 +254,7 @@
             nextLink.type = 'button';
             nextLink.addEventListener('click', function () { openStep(next.key, true); });
             step.nextLink = nextLink;
-            // The button sits on its own row, at the right (Andrew, 2026-10-09).
+            // The button sits on its own row, at the left (Andrew, 2026-10-09).
             var nextRow = el('div', 'gs-b gs-b-nextrow');
             nextRow.appendChild(nextLink);
             // After the step's last part (engraving has two Ecwid modules). Baskets' second part,
