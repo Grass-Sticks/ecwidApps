@@ -101,6 +101,18 @@ html[data-gs-builder="on"] .ec-store [data-gs-step][data-gs-open="yes"] {
     padding-bottom: 16px !important;
 }
 
+/* Engraving is two Ecwid boxes (Pole 1, Pole 2): no step padding between them, so the two
+   boxes sit together (Andrew, 2026-10-09: "big gap between the engraving input boxes"). */
+html[data-gs-builder="on"] .ec-store [data-gs-step="engraving"][data-gs-part="main"][data-gs-open="yes"] {
+    padding-bottom: 0 !important;
+}
+
+/* A step with nothing of ours in its body (engraving's preview sits under Pole 2) takes no
+   space. */
+html[data-gs-builder="on"] .ec-store .gs-b-body:empty {
+    display: none !important;
+}
+
 html[data-gs-builder="on"] .ec-store .gs-b-head {
     display: grid !important;
     grid-template-columns: 24px auto minmax(0, 1fr) 12px !important;
