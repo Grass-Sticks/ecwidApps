@@ -882,13 +882,16 @@ html[data-gs-builder="on"] .ec-store .gs-b-rail {
         padding-right: 84px !important;
     }
 
+    /* Reaches 22 px into the store's 30 px right margin, so the pole can be bigger (its
+       height follows its width) without narrowing the options (Andrew's Galaxy A15,
+       384 px wide: pole 354 -> 457 px tall). */
     html[data-gs-builder="on"] .ec-store .gs-b-rail {
         display: block !important;
         position: absolute !important;
         top: 0 !important;
-        right: 0 !important;
+        right: -22px !important;
         bottom: 0 !important;
-        width: 76px !important;
+        width: 98px !important;
         margin: 0 !important;
         pointer-events: none !important;
     }
