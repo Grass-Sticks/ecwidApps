@@ -425,6 +425,23 @@ html[data-gs-builder="on"] .ec-store .gs-b-help--warn {
     color: var(--gs-b-warn) !important;
 }
 
+html[data-gs-builder="on"] .ec-store .gs-b-tip,
+html[data-gs-builder="on"] .ec-store .gs-b-finder-note {
+    margin: 0 !important;
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+    color: #555 !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-tip b {
+    color: var(--gs-b-ink) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-finder-note .gs-b-link {
+    font-size: 13px !important;
+    white-space: nowrap !important;
+}
+
 html[data-gs-builder="on"] .ec-store .gs-b-finder {
     display: grid !important;
     gap: 10px !important;

@@ -506,6 +506,12 @@
         step.lengthHelp = el('p', 'gs-b-help');
         step.body.appendChild(step.lengthHelp);
 
+        // The best advice from the sizing page, where everyone sees it (Andrew, 2026-10-09).
+        var tip = el('p', 'gs-b-tip');
+        tip.appendChild(el('b', null, 'Have poles you like? '));
+        tip.appendChild(document.createTextNode('Measure them from the top of the grip to the tip and use that.'));
+        step.body.appendChild(tip);
+
         // Height-to-length finder, in place of the link to the sizing page.
         var finder = el('div', 'gs-b-finder');
         // A real button, like the old green "Click for sizing" one, so it can't be missed.
@@ -559,6 +565,18 @@
 
         var result = el('div', 'gs-b-finder-result');
         panel.appendChild(result);
+
+        // The rest of the sizing page's advice is one tap away, in a new tab so the shopper
+        // keeps their choices here.
+        var note = el('p', 'gs-b-finder-note', 'This is a starting point. Some skiers like 1-2" longer, or shorter for off-piste. ');
+        var more = el('a', 'gs-b-link', 'More sizing tips');
+        more.href = storeId === CANADA_STORE_ID
+            ? 'https://www.grasssticks.ca/skipolelengthcalc/'
+            : 'https://www.grasssticks.com/skipolelengthcalc/';
+        more.target = '_blank';
+        more.rel = 'noopener';
+        note.appendChild(more);
+        panel.appendChild(note);
 
         function update() {
             while (result.firstChild) result.removeChild(result.firstChild);
