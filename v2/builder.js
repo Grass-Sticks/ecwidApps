@@ -3,7 +3,8 @@
  *
  * Turns a pole's options into five numbered, collapsible steps (Grip, Baskets, Strap,
  * Length, Engraving): colour swatches instead of the grip and basket dropdowns, basket
- * size cards, a picture grid of straps, an in/cm switch and a height-to-length finder,
+ * size cards, a picture grid of straps, length with the unit worked out from the number
+ * (written into the order, "48" -> "48 inches") and a height-to-length finder,
  * and a live preview of the engraving. On phones a bar pinned to the bottom shows the
  * grip end and the basket end of the pole, the price and Add to Cart. "Staff picks" set
  * a whole combo with one tap.
@@ -70,9 +71,12 @@
         { name: 'Purple Haze', grip: 'Purple', basket: 'Purple', strap: 'Purple Haze' }
     ];
 
-    // From the sizing calculator page (grasssticks.com/skipolelengthcalc):
-    // pole inches = 0.5799 x height inches + 6.7078, longest pole 54 in / 137 cm.
-    var SIZING = { slope: 0.5799, intercept: 6.7078, maxInches: 54, maxCm: 137 };
+    // Same as the sizing calculator (sizecalc.js): pole inches = 0.5799 x height inches + 6.7078.
+    // There is no longest pole (Andrew, 2026-10-09); past 54 in / 137 cm we just add a note.
+    var SIZING = {
+        slope: 0.5799, intercept: 6.7078, longInches: 54, longCm: 137,
+        longNote: 'Longer than most alpine poles. Great for cross-country or tall skiers.'
+    };
 
     var STEPS = [
         { key: 'grip', title: 'Grip', modules: ['.details-product-option--Grip-Color'] },
@@ -109,6 +113,8 @@
         if (className) node.setAttribute('class', className);
         return node;
     }
+
+    var RULER = '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.3 15.3 8.7 2.7a1 1 0 0 0-1.4 0L2.7 7.3a1 1 0 0 0 0 1.4l12.6 12.6a1 1 0 0 0 1.4 0l4.6-4.6a1 1 0 0 0 0-1.4zM7.5 10.5l2-2M10.5 13.5l2-2M13.5 16.5l2-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
     var CHEVRON = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M11 4L6 9 1 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
@@ -469,7 +475,7 @@
         return { n: parseFloat(match[1].replace(',', '.')), unit: unit };
     }
 
-    // Poles are 30 to 54 inches, or 76 to 137 cm, so a bare number says which.
+    // Poles run about 30 to 60 inches, or 76 cm and up, so a bare number says which.
     function guessUnit(n) { return n >= 70 ? 'cm' : 'in'; }
 
     function lengthText(n, unit) { return n + (unit === 'cm' ? ' cm' : ' inches'); }
@@ -488,31 +494,18 @@
         if (!input) return;
         lengthUnit = null;
 
-        var units = el('div', 'gs-b-units');
-        units.setAttribute('role', 'group');
-        units.setAttribute('aria-label', 'Length units');
-        [['in', 'inches'], ['cm', 'cm']].forEach(function (pair) {
-            var button = el('button', 'gs-b-unit', pair[0]);
-            button.type = 'button';
-            button.dataset.unit = pair[0];
-            button.setAttribute('aria-label', pair[1]);
-            button.addEventListener('click', function () {
-                lengthUnit = pair[0];
-                var parsed = parseLength(input.value);
-                if (parsed) setLength(lengthText(parsed.n, lengthUnit));
-                renderSoon();
-            });
-            units.appendChild(button);
-        });
-        step.units = units;
+        // No in/cm buttons (Andrew, 2026-10-09): the number itself says which unit, so the
+        // shopper never has to choose. The line under the box confirms it ("48 in = 122 cm").
         step.lengthHelp = el('p', 'gs-b-help');
-        step.body.appendChild(units);
         step.body.appendChild(step.lengthHelp);
 
         // Height-to-length finder, in place of the link to the sizing page.
         var finder = el('div', 'gs-b-finder');
-        var toggle = el('button', 'gs-b-link gs-b-finder-toggle', 'Not sure? Find my length');
+        // A real button, like the old green "Click for sizing" one, so it can't be missed.
+        var toggle = el('button', 'gs-b-finder-toggle');
         toggle.type = 'button';
+        toggle.appendChild(svg(RULER, 'gs-b-ruler'));
+        toggle.appendChild(document.createTextNode('Find my length'));
         toggle.setAttribute('aria-expanded', 'false');
         var panel = el('div', 'gs-b-finder-panel');
         panel.hidden = true;
@@ -568,12 +561,8 @@
             if (heightInches < 36 || heightInches > 90) return;
             var poleInches = SIZING.slope * heightInches + SIZING.intercept;
             var length = metric ? Math.round(poleInches * 2.54) : Math.round(poleInches);
-            var longest = metric ? SIZING.maxCm : SIZING.maxInches;
-            var tooLong = length > longest;
-            if (tooLong) length = longest;
-            result.appendChild(el('span', null, tooLong
-                ? 'You\'d suit ' + Math.round(metric ? poleInches * 2.54 : poleInches) + (metric ? ' cm' : '"') + ', but our longest is ' + longest + (metric ? ' cm.' : '".')
-                : 'Your length: '));
+            var isLong = length > (metric ? SIZING.longCm : SIZING.longInches);
+            result.appendChild(el('span', null, (isLong ? SIZING.longNote + ' ' : '') + 'Your length: '));
             var use = el('button', 'gs-b-use', 'Use ' + lengthText(length, metric ? 'cm' : 'in'));
             use.type = 'button';
             use.addEventListener('click', function () {
@@ -589,12 +578,9 @@
 
     function drawLength(step) {
         var input = lengthInput();
-        if (!input || !step.units) return;
+        if (!input || !step.lengthHelp) return;
         var parsed = parseLength(input.value);
-        var unit = (parsed && parsed.unit) || lengthUnit || (parsed ? guessUnit(parsed.n) : null);
-        $all('.gs-b-unit', step.units).forEach(function (button) {
-            button.setAttribute('aria-pressed', button.dataset.unit === unit ? 'true' : 'false');
-        });
+        var unit = parsed ? parsed.unit || guessUnit(parsed.n) : null;
         var help = step.lengthHelp;
         help.className = 'gs-b-help';
         if (!input.value.trim()) {
@@ -605,11 +591,9 @@
         } else {
             var inches = unit === 'cm' ? parsed.n / 2.54 : parsed.n;
             var other = unit === 'cm' ? (Math.round(inches * 2) / 2) + ' in' : Math.round(parsed.n * 2.54) + ' cm';
-            var tooLong = unit === 'cm' ? parsed.n > SIZING.maxCm : parsed.n > SIZING.maxInches;
-            help.textContent = tooLong
-                ? 'Our longest pole is ' + SIZING.maxInches + ' in (' + SIZING.maxCm + ' cm). Contact us if you need longer.'
-                : parsed.n + ' ' + (unit === 'cm' ? 'cm' : 'in') + ' = ' + other + '.';
-            if (tooLong) help.className += ' gs-b-help--warn';
+            var isLong = unit === 'cm' ? parsed.n > SIZING.longCm : parsed.n > SIZING.longInches;
+            help.textContent = parsed.n + ' ' + (unit === 'cm' ? 'cm' : 'in') + ' = ' + other + '.' +
+                (isLong ? ' ' + SIZING.longNote : '');
         }
     }
 
@@ -620,8 +604,7 @@
         if (!enabled() || !input || event.target !== input) return;
         var parsed = parseLength(input.value);
         if (!parsed || parsed.unit) return;
-        var unit = lengthUnit || guessUnit(parsed.n);
-        setLength(lengthText(parsed.n, unit));
+        setLength(lengthText(parsed.n, guessUnit(parsed.n)));
     });
 
     // ------------------------------------------------------------------ engraving

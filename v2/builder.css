@@ -415,32 +415,6 @@ html[data-gs-builder="on"] .ec-store .gs-b-strap[aria-pressed="true"] {
 
 /* ---------- Length ---------- */
 
-html[data-gs-builder="on"] .ec-store .gs-b-units {
-    display: inline-flex !important;
-    justify-self: start !important;
-    border: 1px solid #d6d6d6 !important;
-    border-radius: 6px !important;
-    overflow: hidden !important;
-}
-
-html[data-gs-builder="on"] .ec-store .gs-b-unit {
-    width: auto !important;
-    min-width: 48px !important;
-    margin: 0 !important;
-    padding: 6px 12px !important;
-    background: #fff !important;
-    border: 0 !important;
-    color: #555 !important;
-    font: inherit !important;
-    font-size: 14px !important;
-    cursor: pointer !important;
-}
-
-html[data-gs-builder="on"] .ec-store .gs-b-unit[aria-pressed="true"] {
-    background: var(--gs-b-ink) !important;
-    color: #fff !important;
-}
-
 html[data-gs-builder="on"] .ec-store .gs-b-help {
     margin: 0 !important;
     font-size: 13px !important;
@@ -456,8 +430,37 @@ html[data-gs-builder="on"] .ec-store .gs-b-finder {
     gap: 10px !important;
 }
 
+/* Solid green like the old "Click for sizing" button, a shade deeper so the white text
+   is easy to read. */
 html[data-gs-builder="on"] .ec-store .gs-b-finder-toggle {
     justify-self: start !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 9px 14px !important;
+    background: #2e7d32 !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+    color: #fff !important;
+    font: inherit !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-finder-toggle:hover {
+    background: #256b29 !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-finder-toggle[aria-expanded="true"] {
+    background: #1f4d3a !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-ruler {
+    flex: none !important;
 }
 
 html[data-gs-builder="on"] .ec-store .gs-b-finder-panel {
@@ -545,46 +548,36 @@ html[data-gs-builder="on"] .ec-store .gs-b-bamboo {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    height: 36px !important;
-    border-radius: 18px !important;
+    height: 40px !important;
     overflow: hidden !important;
-    background: linear-gradient(180deg, #e7b765 0%, #d39b45 35%, #b97a2b 70%, #9b6220 100%) !important;
+    /* A real stretch of Original shaft, cut from the product photo (white backdrop made
+       see-through). Right-aligned so the clean part sits behind the words, not the knot. */
+    background: url('builder-photos/bamboo.webp') right center / cover no-repeat !important;
 }
 
 html[data-gs-builder="on"] .ec-store .gs-b-bamboo[hidden] {
     display: none !important;
 }
 
-/* Two bamboo nodes. */
-html[data-gs-builder="on"] .ec-store .gs-b-bamboo::before,
-html[data-gs-builder="on"] .ec-store .gs-b-bamboo::after {
-    content: '' !important;
-    position: absolute !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    width: 3px !important;
-    background: rgba(90, 50, 10, 0.35) !important;
-}
-
-html[data-gs-builder="on"] .ec-store .gs-b-bamboo::before { left: 12% !important; }
-html[data-gs-builder="on"] .ec-store .gs-b-bamboo::after { right: 12% !important; }
-
+/* Burned into the cane: dark brown, blended into the bamboo's grain. */
 html[data-gs-builder="on"] .ec-store .gs-b-bamboo span {
     position: relative !important;
-    max-width: 72% !important;
+    max-width: 80% !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
-    color: rgba(55, 28, 6, 0.88) !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.1em !important;
-    text-transform: uppercase !important;
-    text-shadow: 0 1px 0 rgba(255, 230, 180, 0.45) !important;
+    /* Exactly as typed: no forced capitals (Andrew, 2026-10-09). The engraving font is
+       still to come from Andrew. */
+    color: rgba(40, 18, 4, 0.9) !important;
+    mix-blend-mode: multiply !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em !important;
+    text-transform: none !important;
 }
 
 html[data-gs-builder="on"] .ec-store .gs-b-bamboo span.gs-b-empty {
-    color: rgba(55, 28, 6, 0.4) !important;
+    color: rgba(40, 18, 4, 0.4) !important;
     font-weight: 500 !important;
     letter-spacing: 0.02em !important;
     text-transform: none !important;
@@ -780,8 +773,8 @@ html[data-gs-builder="on"] .gs-b-head:focus-visible,
 html[data-gs-builder="on"] .gs-b-swatch:focus-visible,
 html[data-gs-builder="on"] .gs-b-size:focus-visible,
 html[data-gs-builder="on"] .gs-b-strap:focus-visible,
-html[data-gs-builder="on"] .gs-b-unit:focus-visible,
 html[data-gs-builder="on"] .gs-b-link:focus-visible,
+html[data-gs-builder="on"] .gs-b-finder-toggle:focus-visible,
 html[data-gs-builder="on"] .gs-b-next:focus-visible,
 html[data-gs-builder="on"] .gs-b-use:focus-visible,
 html[data-gs-builder="on"] .gs-b-pick:focus-visible,
