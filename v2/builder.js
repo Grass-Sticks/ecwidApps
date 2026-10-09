@@ -914,7 +914,8 @@
     function updateRail() {
         if (!rail || !enabled() || window.innerWidth > PHONE_WIDTH) return;
         var gallery = $('.details-gallery');
-        var shown = !gallery || gallery.getBoundingClientRect().bottom < 60;
+        // offsetWidth 0: builder.css hides the strip on very small phones.
+        var shown = rail.offsetWidth > 0 && (!gallery || gallery.getBoundingClientRect().bottom < 60);
         if (rail.hasAttribute('data-gs-shown') === shown) return;
         rail.toggleAttribute('data-gs-shown', shown);
         // builder.css moves Ecwid's floating cart button above the pole while it shows.

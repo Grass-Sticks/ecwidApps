@@ -922,6 +922,19 @@ html[data-gs-builder="on"] .ec-store .gs-b-rail {
     }
 }
 
+/* Very small phones (320 px, e.g. the first iPhone SE): with the strip the options are only
+   ~176 px wide and the Classic Beige tiles cut off "Adjustable" (checked on Andrew's phone
+   emulating 320x568). These rare screens skip the strip and keep the full width. */
+@media (max-width: 340px) {
+    html[data-gs-builder="on"] .ec-store .product-details__product-options {
+        padding-right: 0 !important;
+    }
+
+    html[data-gs-builder="on"] .ec-store .gs-b-rail {
+        display: none !important;
+    }
+}
+
 html[data-gs-builder="on"] .gs-b-stage {
     position: absolute !important;
     max-width: none !important;
