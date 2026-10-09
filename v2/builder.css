@@ -653,13 +653,37 @@ html[data-gs-builder="on"] .ec-store .gs-b-picks {
     margin: 0 0 16px !important;
 }
 
+/* A button: tapping it folds or opens the picks. */
 html[data-gs-builder="on"] .ec-store .gs-b-picks-title {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    justify-self: start !important;
+    width: auto !important;
     margin: 0 !important;
+    padding: 2px 0 !important;
+    background: none !important;
+    border: 0 !important;
+    font: inherit !important;
     font-size: 12px !important;
     font-weight: 700 !important;
     letter-spacing: 0.06em !important;
     text-transform: uppercase !important;
     color: var(--gs-b-muted) !important;
+    cursor: pointer !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-picks-title .gs-b-chev {
+    width: 10px !important;
+    height: 10px !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-picks-title[aria-expanded="true"] .gs-b-chev {
+    transform: rotate(180deg) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-picks-row[hidden] {
+    display: none !important;
 }
 
 /* A sideways-scrolling row; the last pick peeks in so it's clear there are more. */
@@ -840,6 +864,7 @@ html[data-gs-builder="on"] .gs-b-finder-toggle:focus-visible,
 html[data-gs-builder="on"] .gs-b-next:focus-visible,
 html[data-gs-builder="on"] .gs-b-use:focus-visible,
 html[data-gs-builder="on"] .gs-b-pick:focus-visible,
+html[data-gs-builder="on"] .gs-b-picks-title:focus-visible,
 html[data-gs-builder="on"] .gs-b-bar-button:focus-visible {
     outline: 2px solid rgba(135, 186, 218, 1) !important;
     outline-offset: 2px !important;

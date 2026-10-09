@@ -133,6 +133,7 @@
         if (!select || select.value === value) return;
         select.value = value;
         fire(select, 'change');
+        foldPicks();
         renderSoon();
     }
 
@@ -477,6 +478,7 @@
                 tile.addEventListener('click', function () {
                     var radio = $('input[type="radio"][name="Strap"][value="' + CSS.escape(item.value) + '"]', moduleOf(step));
                     if (radio && !radio.checked) radio.click();
+                    foldPicks();
                     renderSoon();
                 });
                 grid.appendChild(tile);
@@ -716,8 +718,18 @@
         if (!picks.length) return;
 
         var box = el('div', 'gs-b gs-b-picks');
-        box.appendChild(el('p', 'gs-b-picks-title', 'Staff picks'));
+        // The title is a button: the picks fold to this one line once the shopper starts
+        // choosing their own pair (Andrew, 2026-10-09: "its taking up alot of space"), and a tap
+        // opens them again.
+        var toggle = el('button', 'gs-b-picks-title');
+        toggle.type = 'button';
+        toggle.appendChild(document.createTextNode('Staff picks'));
+        toggle.appendChild(svg(CHEVRON, 'gs-b-chev'));
+        toggle.addEventListener('click', function () { setPicksOpen(row.hidden); });
+        box.appendChild(toggle);
         var row = el('div', 'gs-b-picks-row');
+        picksParts = { toggle: toggle, row: row };
+        setPicksOpen(true);
         picks.forEach(function (pick) {
             var button = el('button', 'gs-b-pick');
             button.type = 'button';
@@ -735,6 +747,19 @@
         box.appendChild(row);
         var main = moduleOf(grip);
         main.parentNode.insertBefore(box, main);
+    }
+
+    var picksParts = null;
+
+    function setPicksOpen(open) {
+        if (!picksParts) return;
+        picksParts.row.hidden = !open;
+        picksParts.toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    // The shopper has started choosing: fold the picks away (they can reopen them).
+    function foldPicks() {
+        if (picksParts && document.contains(picksParts.row)) setPicksOpen(false);
     }
 
     // One Ecwid choice at a time, a beat apart, so each change settles (price, photo,
@@ -1059,7 +1084,7 @@
     // Typing in Ecwid's boxes (length, engraving) redraws the summaries and preview.
     document.addEventListener('input', function (event) {
         if (!enabled() || !event.target.closest) return;
-        if (event.target.closest('[data-gs-step]')) renderSoon();
+        if (event.target.closest('[data-gs-step]')) { foldPicks(); renderSoon(); }
     });
     // Photos load after a choice; redraw the bar's crops when the main one does.
     document.addEventListener('load', function (event) {
