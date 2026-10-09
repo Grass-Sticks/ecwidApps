@@ -200,16 +200,16 @@ Ecwid.OnAPILoaded.add(function () {
     var STRAP_PHOTO_PRODUCTS = [865875809];
     var STRAP_PHOTO_SIZE = { width: '3052', height: '6972' };
     var STRAP_PHOTOS = {
-        'Bridgers':       { file: 'bridgers.webp', box: [0.51278, 0.03701, 0.27588, 0.14716] },
-        'Dark Side':      { file: 'dark-side.webp', box: [0.51278, 0.03758, 0.27588, 0.15132] },
-        'Flow':           { file: 'flow.webp', box: [0.51278, 0.03772, 0.27588, 0.14329] },
-        'Idaho 9':        { file: 'idaho-9.webp', box: [0.51278, 0.03873, 0.27687, 0.14013] },
-        'Lone Peak':      { file: 'lone-peak.webp', box: [0.51278, 0.0383, 0.28145, 0.13052] },
+        'Bridgers':       { file: 'bridgers.webp', box: [0.51278, 0.03701, 0.2844, 0.14716] },
+        'Dark Side':      { file: 'dark-side.webp', box: [0.51278, 0.03758, 0.2844, 0.15132] },
+        'Flow':           { file: 'flow.webp', box: [0.51278, 0.03772, 0.2844, 0.14329] },
+        'Idaho 9':        { file: 'idaho-9.webp', box: [0.51278, 0.03873, 0.2844, 0.14013] },
+        'Lone Peak':      { file: 'lone-peak.webp', box: [0.51278, 0.0383, 0.2844, 0.13052] },
         'Mount Tam':      { file: 'mount-tam.webp', box: [0.51278, 0.0403, 0.29653, 0.1321] },
-        'Purple Haze':    { file: 'purple-haze.webp', box: [0.51278, 0.03701, 0.28375, 0.1562] },
-        'Spanish Peaks':  { file: 'spanish-peaks.webp', box: [0.51278, 0.03571, 0.27588, 0.14859] },
-        'Teton':          { file: 'teton.webp', box: [0.51278, 0.03858, 0.27588, 0.15146] },
-        'The Grand':      { file: 'the-grand.webp', box: [0.51278, 0.03815, 0.27588, 0.15333] },
+        'Purple Haze':    { file: 'purple-haze.webp', box: [0.51278, 0.03701, 0.2844, 0.1562] },
+        'Spanish Peaks':  { file: 'spanish-peaks.webp', box: [0.51278, 0.03571, 0.2844, 0.14859] },
+        'Teton':          { file: 'teton.webp', box: [0.51278, 0.03858, 0.2844, 0.15146] },
+        'The Grand':      { file: 'the-grand.webp', box: [0.51278, 0.03815, 0.2844, 0.15333] },
         'Wasatch Front':  { file: 'wasatch-front.webp', box: [0.51278, 0.04002, 0.29161, 0.1463] }
     };
 
