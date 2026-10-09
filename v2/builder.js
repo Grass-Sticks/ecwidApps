@@ -178,6 +178,10 @@
             node.removeAttribute('data-gs-open');
             node.removeAttribute('data-gs-part');
         });
+        $all('input[data-gs-keypad]').forEach(function (input) {
+            input.removeAttribute('inputmode');
+            input.removeAttribute('data-gs-keypad');
+        });
         document.documentElement.removeAttribute('data-gs-builder');
         document.documentElement.style.removeProperty('--gs-b-photo-top');
         setBarShown(false);
@@ -636,6 +640,13 @@
     function drawLength(step) {
         var input = lengthInput();
         if (!input || !step.lengthHelp) return;
+        // Phones open the number pad, not letters (Andrew, 2026-10-09). "decimal" rather than
+        // "numeric" so iPhones still offer a "." for 48.5. Set on every draw because Ecwid can
+        // swap the box out.
+        if (!input.hasAttribute('data-gs-keypad')) {
+            input.setAttribute('inputmode', 'decimal');
+            input.setAttribute('data-gs-keypad', '');
+        }
         var parsed = parseLength(input.value);
         var unit = parsed ? parsed.unit || guessUnit(parsed.n) : null;
         var help = step.lengthHelp;
