@@ -249,8 +249,10 @@
             nextLink.type = 'button';
             nextLink.addEventListener('click', function () { openStep(next.key, true); });
             step.nextLink = nextLink;
-            // After the step's last part (engraving and baskets have two Ecwid modules).
-            var last = step.found.filter(Boolean).pop();
+            // After the step's last part (engraving has two Ecwid modules). Baskets' second part,
+            // Ecwid's size dropdown, is always hidden (the size cards replace it), so its link
+            // goes in the first part, under the colour swatches.
+            var last = step.key === 'baskets' ? main : step.found.filter(Boolean).pop();
             last.appendChild(nextLink);
         }
     }
@@ -261,7 +263,12 @@
         if (!scroll) return;
         var step = stepByKey(key);
         if (!step) return;
-        var top = step.head.getBoundingClientRect().top + window.pageYOffset - 70;
+        // Only scroll when the step's header is off screen. The step just closed folds up, so
+        // the next one usually lands where the shopper is already looking, and scrolling anyway
+        // pushed the pole photo out of view on desktop (Andrew, 2026-10-09).
+        var rect = step.head.getBoundingClientRect();
+        if (rect.top >= 0 && rect.bottom <= window.innerHeight - 80) return;
+        var top = rect.top + window.pageYOffset - 70;
         window.scrollTo({ top: top, behavior: 'smooth' });
     }
 
@@ -589,8 +596,9 @@
             help.textContent = 'Just the number please, like 48 or 122 cm.';
             help.className += ' gs-b-help--warn';
         } else {
-            var inches = unit === 'cm' ? parsed.n / 2.54 : parsed.n;
-            var other = unit === 'cm' ? (Math.round(inches * 2) / 2) + ' in' : Math.round(parsed.n * 2.54) + ' cm';
+            // One decimal on purpose ("48 in = 121.9 cm"): a round number made shoppers think the
+            // conversion was exact (Andrew, 2026-10-09).
+            var other = unit === 'cm' ? (parsed.n / 2.54).toFixed(1) + ' in' : (parsed.n * 2.54).toFixed(1) + ' cm';
             var isLong = unit === 'cm' ? parsed.n > SIZING.longCm : parsed.n > SIZING.longInches;
             help.textContent = parsed.n + ' ' + (unit === 'cm' ? 'cm' : 'in') + ' = ' + other + '.' +
                 (isLong ? ' ' + SIZING.longNote : '');
