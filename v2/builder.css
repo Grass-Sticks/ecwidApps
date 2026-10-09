@@ -152,9 +152,13 @@ html[data-gs-builder="on"] .ec-store .gs-b-title {
     font-weight: 700 !important;
 }
 
+/* Sized to its content and pushed right; if it is still too long for the room beside the
+   title, it is trimmed on the right rather than losing its start. */
 html[data-gs-builder="on"] .ec-store .gs-b-value {
     display: flex !important;
-    justify-content: flex-end !important;
+    justify-self: end !important;
+    max-width: 100% !important;
+    justify-content: flex-start !important;
     align-items: center !important;
     gap: 6px !important;
     min-width: 0 !important;
@@ -195,6 +199,21 @@ html[data-gs-builder="on"] .ec-store .gs-b-thumb {
     object-fit: cover !important;
     border-radius: 2px !important;
     flex: none !important;
+}
+
+/* Phones: the options column is narrower (the pole rides beside it), so the step summaries
+   drop what the eye doesn't need: the basket colour's name (its dot shows it) and, on the
+   narrowest phones, the strap's little picture. */
+@media (max-width: 768px) {
+    html[data-gs-builder="on"] .ec-store .gs-b-value-colour {
+        display: none !important;
+    }
+}
+
+@media (max-width: 400px) {
+    html[data-gs-builder="on"] .ec-store .gs-b-value .gs-b-thumb {
+        display: none !important;
+    }
 }
 
 html[data-gs-builder="on"] .ec-store .gs-b-chev {

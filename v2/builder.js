@@ -1016,7 +1016,11 @@
                 }
                 step.blackNote.hidden = !(size && size.blackOnly);
                 if (colourSelect) {
-                    setValue(step, [dot(swatchColour(colourSelect.value, true)), colourSelect.value + (size ? ' · ' + size.name : ''),
+                    // Phones hide the colour's name (builder.css): the dot shows it, and the
+                    // narrow header can't fit "Green · Medium" beside the title.
+                    setValue(step, [dot(swatchColour(colourSelect.value, true)),
+                        size ? el('span', 'gs-b-value-colour', colourSelect.value + ' · ') : colourSelect.value,
+                        size ? size.name : null,
                         upcharge(chosenPrice(colourSelect)), upcharge(chosenPrice(sizeSelect))]);
                 }
             }
