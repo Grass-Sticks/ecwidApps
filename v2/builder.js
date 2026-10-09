@@ -288,6 +288,8 @@
         // can make that happen while the shopper is scrolled down; then the top of the pole
         // was cut off. So never scroll down that far, and scroll back up if it already
         // happened, keeping the step's header on screen.
+        // Phones: the same for the pole beside the options, which also leaves with them
+        // (Andrew, 2026-10-09: Next to Engraving, the last step, cut off the pole's top).
         var head = step.head.getBoundingClientRect();
         var parts = step.found.filter(function (module) { return module && module.offsetHeight; });
         var bottom = parts.length ? parts[parts.length - 1].getBoundingClientRect().bottom : head.bottom;
@@ -299,10 +301,15 @@
         else if (bottom > room) delta = Math.min(bottom - room, head.top - pad);
         var gallery = $('.product-details__gallery');
         var sidebar = $('.product-details__sidebar');
+        var keepPhoto = null;
         if (!phone && gallery && sidebar) {
-            var keepPhoto = sidebar.getBoundingClientRect().bottom - gallery.offsetHeight - 16;
-            if (delta > keepPhoto) delta = Math.max(keepPhoto, head.bottom - room);
+            keepPhoto = sidebar.getBoundingClientRect().bottom - gallery.offsetHeight - 16;
         }
+        if (phone && rail && rail.hasAttribute('data-gs-shown') && rail.pole.offsetHeight > 120) {
+            // 56 = the pole's sticky top in builder.css.
+            keepPhoto = rail.getBoundingClientRect().bottom - rail.pole.offsetHeight - 56;
+        }
+        if (keepPhoto !== null && delta > keepPhoto) delta = Math.max(keepPhoto, head.bottom - room);
         if (Math.abs(delta) < 2) return;
         window.scrollTo({ top: window.pageYOffset + delta, behavior: 'smooth' });
     }
