@@ -236,7 +236,7 @@
         head.appendChild(step.value);
         head.appendChild(svg(CHEVRON, 'gs-b-chev'));
         head.addEventListener('click', function () {
-            if (openKey === step.key) { openKey = null; render(); }
+            if (openKey === step.key) { openKey = null; render(); reveal(step); }
             else openStep(step.key, true);
         });
         main.insertBefore(head, main.firstChild);
@@ -263,19 +263,37 @@
         render();
         if (!scroll) return;
         var step = stepByKey(key);
-        if (!step) return;
-        // Bring the whole step into view, but only when it doesn't already fit: if it runs off
-        // the bottom (the strap grid does) or its header is above the screen, scroll its header
-        // to just below the top. The desktop photo is pinned, so it stays in view (Andrew,
-        // 2026-10-09). On phones, leave room for the pinned bar at the bottom.
+        if (step) reveal(step);
+    }
+
+    function reveal(step) {
+        // Bring the whole step into view, scrolling only as far as needed (Andrew, 2026-10-09):
+        // - header above the screen: scroll up to it;
+        // - step runs off the bottom (the strap grid does): scroll down just until its bottom
+        //   shows, but never past its header.
+        // Desktop: the whole pole photo must stay in view. The photo leaves with the options
+        // once their bottom rises above its bottom, and a step folding shut (the strap grid)
+        // can make that happen while the shopper is scrolled down; then the top of the pole
+        // was cut off. So never scroll down that far, and scroll back up if it already
+        // happened, keeping the step's header on screen.
+        // Phones leave room for the pinned bar at the bottom.
         var head = step.head.getBoundingClientRect();
         var parts = step.found.filter(function (module) { return module && module.offsetHeight; });
         var bottom = parts.length ? parts[parts.length - 1].getBoundingClientRect().bottom : head.bottom;
         var phone = window.innerWidth <= PHONE_WIDTH;
+        var pad = phone ? 16 : 20;
         var room = window.innerHeight - (phone ? 96 : 16);
-        if (head.top >= 0 && bottom <= room) return;
-        var top = head.top + window.pageYOffset - (phone ? 16 : 20);
-        window.scrollTo({ top: top, behavior: 'smooth' });
+        var delta = 0;
+        if (head.top < 0) delta = head.top - pad;
+        else if (bottom > room) delta = Math.min(bottom - room, head.top - pad);
+        var gallery = $('.product-details__gallery');
+        var sidebar = $('.product-details__sidebar');
+        if (!phone && gallery && sidebar) {
+            var keepPhoto = sidebar.getBoundingClientRect().bottom - gallery.offsetHeight - 16;
+            if (delta > keepPhoto) delta = Math.max(keepPhoto, head.bottom - room);
+        }
+        if (Math.abs(delta) < 2) return;
+        window.scrollTo({ top: window.pageYOffset + delta, behavior: 'smooth' });
     }
 
     function stepByKey(key) {
