@@ -17,6 +17,48 @@ html[data-gs-builder="on"] {
     --gs-b-note-line: #f0dcb4;
 }
 
+/* ---------- Photo pinned beside the options (desktop) ---------- */
+
+/* Ecwid floats the photo left, the options right and the description under the photo. Here
+   the three become a grid: photo and options side by side, the description full width below,
+   and the photo sticky so it stays in view while the shopper chooses. builder.js sets
+   --gs-b-photo-top so the photo leaves with the options instead of sliding over the
+   description. Phones keep Ecwid's stacked layout and get the pinned bar instead. */
+@media (min-width: 769px) {
+    html[data-gs-builder="on"] .ec-store .product-details.product-details--layout-sidebar-right {
+        display: grid !important;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) !important;
+        align-items: start !important;
+    }
+
+    html[data-gs-builder="on"] .ec-store .product-details--layout-sidebar-right > .product-details__gallery {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+        float: none !important;
+        width: auto !important;
+        position: sticky !important;
+        top: var(--gs-b-photo-top, 16px) !important;
+    }
+
+    html[data-gs-builder="on"] .ec-store .product-details--layout-sidebar-right > .product-details__sidebar {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+        float: none !important;
+        width: auto !important;
+    }
+
+    html[data-gs-builder="on"] .ec-store .product-details--layout-sidebar-right > .product-details__description {
+        grid-column: 1 / -1 !important;
+        grid-row: 2 !important;
+        float: none !important;
+        width: auto !important;
+    }
+
+    html[data-gs-builder="on"] .ec-store .product-details--layout-sidebar-right > .clearboth {
+        display: none !important;
+    }
+}
+
 /* ---------- Steps ---------- */
 
 /* Each step is one of Ecwid's option boxes with our header on top. Ecwid's own title is
@@ -583,12 +625,15 @@ html[data-gs-builder="on"] .ec-store .gs-b-bamboo span {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
-    /* Exactly as typed: no forced capitals (Andrew, 2026-10-09). The engraving font is
-       still to come from Andrew. */
+    /* Exactly as typed: no forced capitals (Andrew, 2026-10-09).
+       Cavolini is the font the engraving is done in (Andrew). It is Monotype's, licensed with
+       Windows/Office for use on that computer only, so it is NOT hosted here: shoppers who
+       have it installed (Windows 11, Office) see it; everyone else gets the closest stand-in. */
+    font-family: Cavolini, 'Comic Sans MS', 'Comic Neue', sans-serif !important;
     color: rgba(40, 18, 4, 0.9) !important;
     mix-blend-mode: multiply !important;
-    font-size: 16px !important;
-    font-weight: 600 !important;
+    font-size: 18px !important;
+    font-weight: 400 !important; /* the real engraving is Cavolini regular, not bold */
     letter-spacing: 0.02em !important;
     text-transform: none !important;
 }

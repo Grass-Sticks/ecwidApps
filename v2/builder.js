@@ -175,6 +175,7 @@
             node.removeAttribute('data-gs-part');
         });
         document.documentElement.removeAttribute('data-gs-builder');
+        document.documentElement.style.removeProperty('--gs-b-photo-top');
         setBarShown(false);
         steps = [];
     }
@@ -896,13 +897,26 @@
         setBarShown(galleryGone && optionsHere && !buyShowing);
     }
 
+    // Desktop: builder.css pins the photo (position: sticky) beside the options so it stays in
+    // view while choosing (Andrew, 2026-10-09). Sticky alone would carry it on over the
+    // description below, so once the options column runs out, the photo's top is pulled up
+    // to keep its bottom level with the options' bottom.
+    function pinPhoto() {
+        if (!enabled() || window.innerWidth <= PHONE_WIDTH) return;
+        var gallery = $('.product-details__gallery');
+        var sidebar = $('.product-details__sidebar');
+        if (!gallery || !sidebar) return;
+        var top = Math.min(16, sidebar.getBoundingClientRect().bottom - gallery.offsetHeight);
+        document.documentElement.style.setProperty('--gs-b-photo-top', top + 'px');
+    }
+
     var scrollQueued = false;
     window.addEventListener('scroll', function () {
         if (scrollQueued) return;
         scrollQueued = true;
-        requestAnimationFrame(function () { scrollQueued = false; updateBarVisibility(); });
+        requestAnimationFrame(function () { scrollQueued = false; updateBarVisibility(); pinPhoto(); });
     }, { passive: true });
-    window.addEventListener('resize', function () { updateBarVisibility(); });
+    window.addEventListener('resize', function () { updateBarVisibility(); pinPhoto(); });
 
     function drawBar() {
         if (!bar || bar.hidden) return;
@@ -1006,6 +1020,7 @@
         });
         updateBarVisibility();
         drawBar();
+        pinPhoto();
     }
 
     function renderSoon() {
