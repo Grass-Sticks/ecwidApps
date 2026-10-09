@@ -254,9 +254,8 @@
             nextLink.type = 'button';
             nextLink.addEventListener('click', function () { openStep(next.key, true); });
             step.nextLink = nextLink;
-            // "Step 2 of 5" on the left, the button on the right (Andrew, 2026-10-09).
+            // The button sits on its own row, at the right (Andrew, 2026-10-09).
             var nextRow = el('div', 'gs-b gs-b-nextrow');
-            nextRow.appendChild(el('span', 'gs-b-progress', 'Step ' + step.number + ' of ' + steps.length));
             nextRow.appendChild(nextLink);
             // After the step's last part (engraving has two Ecwid modules). Baskets' second part,
             // Ecwid's size dropdown, is always hidden (the size cards replace it), so its link

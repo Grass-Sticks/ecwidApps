@@ -239,20 +239,13 @@ html[data-gs-builder="on"] .ec-store .gs-b-link {
     cursor: pointer !important;
 }
 
-/* Footer of each step: "Step 2 of 5" on the left, a solid green "Next: Length ›" pill on the
-   right (Andrew, 2026-10-09, option B). The pill shape keeps it distinct from the square
-   "Find my length" button and the black Add to Cart. */
+/* Footer of each step: a solid green "Next: Length ›" pill at the right (Andrew, 2026-10-09).
+   The pill shape keeps it distinct from the square "Find my length" button and the black
+   Add to Cart. */
 html[data-gs-builder="on"] .ec-store .gs-b-nextrow {
     display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 12px !important;
+    justify-content: flex-end !important;
     margin-top: 10px !important;
-}
-
-html[data-gs-builder="on"] .ec-store .gs-b-progress {
-    color: var(--gs-b-muted, #6e6e6e) !important;
-    font-size: 13px !important;
 }
 
 html[data-gs-builder="on"] .ec-store .gs-b-next {
