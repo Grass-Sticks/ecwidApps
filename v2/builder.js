@@ -1000,10 +1000,31 @@
         return chip;
     }
 
+    // The extra cost of the chosen option, shown beside it in the step's summary so the
+    // price is up front ("Cork +$14", "Teton +$19.99"; Andrew, 2026-10-09). Ecwid's own text,
+    // so always the real amount and currency. Nothing for free choices.
+    function upcharge(text) {
+        return text ? el('span', 'gs-b-upcharge', text) : null;
+    }
+
+    function chosenPrice(select) {
+        var option = select && select.options[select.selectedIndex];
+        return option ? surchargeIn(option.text) : '';
+    }
+
+    function strapPrice() {
+        var radio = $('input[type="radio"][name="Strap"]:checked');
+        var row = radio && radio.closest('.form-control');
+        var surcharge = row && $('.option-surcharge__value', row);
+        return surcharge ? surcharge.textContent.trim() : '';
+    }
+
     function setValue(step, nodes, warn) {
         var value = step.value;
         while (value.firstChild) value.removeChild(value.firstChild);
-        nodes.forEach(function (node) { value.appendChild(typeof node === 'string' ? document.createTextNode(node) : node); });
+        nodes.forEach(function (node) {
+            if (node) value.appendChild(typeof node === 'string' ? document.createTextNode(node) : node);
+        });
         value.classList.toggle('gs-b-value--warn', !!warn);
     }
 
@@ -1021,7 +1042,7 @@
             if (step.key === 'grip') {
                 var gripSelect = selectIn(moduleOf(step));
                 drawSwatches(moduleOf(step), $('.gs-b-swatches', step.body), step.gripLabel, 'Grip color');
-                if (gripSelect) setValue(step, [dot(swatchColour(gripSelect.value, false)), gripSelect.value]);
+                if (gripSelect) setValue(step, [dot(swatchColour(gripSelect.value, false)), gripSelect.value, upcharge(chosenPrice(gripSelect))]);
             }
             if (step.key === 'baskets') {
                 var colourSelect = selectIn(step.found[0]);
@@ -1035,7 +1056,8 @@
                 }
                 step.blackNote.hidden = !(size && size.blackOnly);
                 if (colourSelect) {
-                    setValue(step, [dot(swatchColour(colourSelect.value, true)), colourSelect.value + (size ? ' · ' + size.name : '')]);
+                    setValue(step, [dot(swatchColour(colourSelect.value, true)), colourSelect.value + (size ? ' · ' + size.name : ''),
+                        upcharge(chosenPrice(colourSelect)), upcharge(chosenPrice(sizeSelect))]);
                 }
             }
             if (step.key === 'strap') {
@@ -1048,6 +1070,7 @@
                 var picture = picked && $('img', picked);
                 if (picture) { var thumb = el('img', 'gs-b-thumb'); thumb.src = picture.src; thumb.alt = ''; nodes.push(thumb); }
                 nodes.push(strap || 'Choose');
+                nodes.push(upcharge(strapPrice()));
                 setValue(step, nodes);
             }
             if (step.key === 'length') {

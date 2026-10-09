@@ -153,6 +153,17 @@ html[data-gs-builder="on"] .ec-store .gs-b-value {
     text-overflow: ellipsis !important;
 }
 
+/* "+$14" after the chosen option in a step's summary. */
+html[data-gs-builder="on"] .ec-store .gs-b-upcharge {
+    flex: none !important;
+    padding: 1px 6px !important;
+    border-radius: 8px !important;
+    background: #e8f1ec !important;
+    color: var(--gs-b-pine) !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+
 html[data-gs-builder="on"] .ec-store .gs-b-value--warn {
     color: var(--gs-b-warn) !important;
     font-weight: 600 !important;
