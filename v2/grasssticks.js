@@ -185,6 +185,86 @@ Ecwid.OnAPILoaded.add(function () {
         parts.button.setAttribute('aria-expanded', 'true');
     }
 
+    // ------------------------------------------------------------------ strap on the pole photo
+
+    // Picking a Mtn strap shows that real strap on the pole photo, over whatever grip and
+    // basket colour Ecwid is showing. Each picture in strap-photos/ is the strap cut out of
+    // its MTN Straps photo (US product 116311087), tucked behind the grip, plus white paint
+    // over the cream strap underneath. It only lines up on the Original pole shot (every grip
+    // and basket colour is that one 3052x6972 photo recoloured, with the cream strap in the
+    // same place), so it runs only on the products listed here and only on that photo size.
+    // box = left, top, width, height as fractions of the photo. Keys are the exact Strap
+    // option value. No pole photo yet for Lone 2, Sacagawea and Fantasia: they keep the
+    // cream strap. The pictures are made with strap-photo-tool/ in Andrew's notes folder.
+    var STRAP_PHOTO_BASE = 'https://apps.grasssticks.com/strap-photos/';
+    var STRAP_PHOTO_PRODUCTS = [865875809];
+    var STRAP_PHOTO_SIZE = { width: '3052', height: '6972' };
+    var STRAP_PHOTOS = {
+        'Bridgers':       { file: 'bridgers.webp', box: [0.51278, 0.03701, 0.27588, 0.14716] },
+        'Dark Side':      { file: 'dark-side.webp', box: [0.51278, 0.03758, 0.27588, 0.15132] },
+        'Flow':           { file: 'flow.webp', box: [0.51278, 0.03772, 0.27588, 0.14329] },
+        'Idaho 9':        { file: 'idaho-9.webp', box: [0.51278, 0.03873, 0.27687, 0.14013] },
+        'Lone Peak':      { file: 'lone-peak.webp', box: [0.51278, 0.0383, 0.28145, 0.13052] },
+        'Mount Tam':      { file: 'mount-tam.webp', box: [0.51278, 0.0403, 0.29653, 0.1321] },
+        'Purple Haze':    { file: 'purple-haze.webp', box: [0.51278, 0.03701, 0.28375, 0.1562] },
+        'Spanish Peaks':  { file: 'spanish-peaks.webp', box: [0.51278, 0.03571, 0.27588, 0.14859] },
+        'Teton':          { file: 'teton.webp', box: [0.51278, 0.03858, 0.27588, 0.15146] },
+        'The Grand':      { file: 'the-grand.webp', box: [0.51278, 0.03815, 0.27588, 0.15333] },
+        'Wasatch Front':  { file: 'wasatch-front.webp', box: [0.51278, 0.04002, 0.29161, 0.1463] }
+    };
+
+    var currentProductId = null;
+
+    function updateStrapPhoto() {
+        // The first picture in the gallery is the one Ecwid swaps for grip and basket colour.
+        var picture = document.querySelector('.details-gallery__main-image-wrapper .details-gallery__photoswipe-index-0');
+        var radio = document.querySelector('input[type="radio"][name="Strap"]:checked');
+        var strap = radio && STRAP_PHOTOS[radio.value];
+        var fits = strap && picture &&
+            STRAP_PHOTO_PRODUCTS.indexOf(currentProductId) >= 0 &&
+            picture.getAttribute('width') === STRAP_PHOTO_SIZE.width &&
+            picture.getAttribute('height') === STRAP_PHOTO_SIZE.height;
+        // The strap goes on the photo, and again on Ecwid's hover zoom, which is a magnified
+        // copy of the photo laid over it (the box fractions fit both).
+        var holders = [];
+        if (fits) {
+            holders.push(picture.parentNode);
+            var zoom = picture.parentNode.parentNode.querySelector('.details-gallery__images-zoom');
+            if (zoom) holders.push(zoom);
+        }
+
+        var leftOver = document.querySelectorAll('.gs-strap-photo');
+        for (var i = 0; i < leftOver.length; i++) {
+            if (holders.indexOf(leftOver[i].parentNode) >= 0) continue;
+            leftOver[i].parentNode.removeChild(leftOver[i]);
+        }
+
+        for (var j = 0; j < holders.length; j++) {
+            var layer = holders[j].querySelector('.gs-strap-photo');
+            if (!layer) {
+                layer = document.createElement('img');
+                layer.className = 'gs-strap-photo';
+                layer.alt = '';
+                layer.setAttribute('aria-hidden', 'true');
+                holders[j].appendChild(layer);
+            }
+            var src = STRAP_PHOTO_BASE + strap.file;
+            if (layer.getAttribute('src') !== src) layer.setAttribute('src', src);
+            layer.style.left = (strap.box[0] * 100) + '%';
+            layer.style.top = (strap.box[1] * 100) + '%';
+            layer.style.width = (strap.box[2] * 100) + '%';
+            layer.style.height = (strap.box[3] * 100) + '%';
+        }
+    }
+
+    // Ecwid redraws the gallery a moment after an option changes, sometimes after we have
+    // run, so check again shortly after.
+    function updateStrapPhotoSoon() {
+        updateStrapPhoto();
+        setTimeout(updateStrapPhoto, 300);
+        setTimeout(updateStrapPhoto, 1000);
+    }
+
     // ------------------------------------------------------------------ engraving
 
     function parseTiers(select) {
@@ -530,6 +610,7 @@ Ecwid.OnAPILoaded.add(function () {
         setupSizeButton();
         syncSecondPole(); // runs again whenever an option changes, so it follows Quantity
         syncBasketColour(); // same, so it follows Basket Size
+        updateStrapPhotoSoon(); // same, so it follows grip and basket colour
     }
 
     var pageLoadCount = 0;
@@ -543,6 +624,7 @@ Ecwid.OnAPILoaded.add(function () {
         if (!parts || !parts.button) return;
         drawStrapButton(parts);
         collapseStrap(parts);
+        updateStrapPhotoSoon();
     });
 
     // "Switch to Medium for colors" picked in the colour menu. Caught on the way down
@@ -579,6 +661,7 @@ Ecwid.OnAPILoaded.add(function () {
         var thisLoad = pageLoadCount;
         var tries = 0;
         onCartPage = isCartOrCheckout(page);
+        currentProductId = page.type === 'PRODUCT' ? page.productId : null;
         if (onCartPage) {
             (function waitForSummary() {
                 if (thisLoad !== pageLoadCount) return; // shopper moved on
