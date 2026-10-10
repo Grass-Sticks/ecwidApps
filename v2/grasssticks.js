@@ -229,7 +229,7 @@ Ecwid.OnAPILoaded.add(function () {
         'Teton':          { file: 'teton.webp', box: [0.51278, 0.03858, 0.2844, 0.15146] },
         'The Grand':      { file: 'the-grand.webp', box: [0.51278, 0.03815, 0.2844, 0.15333] },
         'Wasatch Front':  { file: 'wasatch-front.webp', box: [0.51278, 0.04002, 0.29161, 0.1463] },
-        'None':           { file: 'none.webp', box: [0.51278, 0.04604, 0.2844, 0.09309] }
+        'None':           { file: 'none.webp', box: [0.51278, 0.03916, 0.30079, 0.10714] }
     };
 
     var currentProductId = null;
