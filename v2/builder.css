@@ -40,6 +40,17 @@ html[data-gs-builder="on"] {
         top: var(--gs-b-photo-top, 16px) !important;
     }
 
+    /* Ecwid makes the photo 1.5x as tall as its column is wide (824 px on a 1440 px window),
+       taller than a laptop screen, so the basket end was cut off (Andrew, 2026-10-10). Capping
+       the photo's boxes at the screen height shrinks the photo to fit, keeping its shape; the
+       strap layer is placed in percentages of it, so it shrinks with it. */
+    html[data-gs-builder="on"] .ec-store .product-details__gallery .details-gallery__images,
+    html[data-gs-builder="on"] .ec-store .product-details__gallery .details-gallery__images-container,
+    html[data-gs-builder="on"] .ec-store .product-details__gallery .details-gallery__images-carousel,
+    html[data-gs-builder="on"] .ec-store .product-details__gallery .details-gallery__image {
+        max-height: calc(100vh - 32px) !important;
+    }
+
     html[data-gs-builder="on"] .ec-store .product-details--layout-sidebar-right > .product-details__sidebar {
         grid-column: 2 !important;
         grid-row: 1 !important;
@@ -339,9 +350,10 @@ html[data-gs-builder="on"] .ec-store .gs-b-swatch {
     gap: 5px !important;
     width: auto !important;
     margin: 0 !important;
-    padding: 3px 0 !important;
+    padding: 6px 0 5px !important;
     background: none !important;
     border: 0 !important;
+    border-radius: 10px !important;
     color: #444 !important;
     font: inherit !important;
     font-size: 12px !important;
@@ -365,13 +377,33 @@ html[data-gs-builder="on"] .ec-store .gs-b-swatch:hover .gs-b-chip {
 }
 
 html[data-gs-builder="on"] .ec-store .gs-b-swatch[aria-pressed="true"] {
+    background: #ececea !important;
     color: var(--gs-b-ink) !important;
     font-weight: 700 !important;
 }
 
 html[data-gs-builder="on"] .ec-store .gs-b-swatch[aria-pressed="true"] .gs-b-chip {
-    outline: 2px solid var(--gs-b-ink) !important;
-    outline-offset: 3px !important;
+    outline: 3px solid var(--gs-b-ink) !important;
+    outline-offset: 2px !important;
+}
+
+/* A ring alone is hard to spot on dark colours, so the picked one also gets a tick badge. */
+html[data-gs-builder="on"] .ec-store .gs-b-swatch[aria-pressed="true"] .gs-b-chip::before,
+html[data-gs-builder="on"] .ec-store .gs-b-size[aria-pressed="true"]::after {
+    content: '' !important;
+    position: absolute !important;
+    z-index: 1 !important;
+    width: 18px !important;
+    height: 18px !important;
+    border-radius: 50% !important;
+    border: 2px solid #fff !important;
+    background: var(--gs-b-ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / 12px no-repeat !important;
+    box-sizing: content-box !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-swatch[aria-pressed="true"] .gs-b-chip::before {
+    right: -7px !important;
+    bottom: -7px !important;
 }
 
 html[data-gs-builder="on"] .ec-store .gs-b-swatch:disabled {
@@ -484,6 +516,12 @@ html[data-gs-builder="on"] .ec-store .gs-b-size span {
 html[data-gs-builder="on"] .ec-store .gs-b-size[aria-pressed="true"] {
     border: 2px solid var(--gs-b-ink) !important;
     padding: 7px 3px 6px !important;
+    background: var(--gs-b-soft) !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-size[aria-pressed="true"]::after {
+    top: -8px !important;
+    right: -8px !important;
 }
 
 html[data-gs-builder="on"] .ec-store .gs-b-note {
