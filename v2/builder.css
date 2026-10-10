@@ -181,13 +181,12 @@ html[data-gs-builder="on"] .ec-store .gs-b-upcharge {
 }
 
 /* A price for something not added yet (Engraving's "from +$14"): the same grey tag as the
-   Mtn Straps price above their tiles, so the green badge only ever means "added". */
+   Mtn Straps price above their tiles, so the green badge only ever means "added". Not in
+   capitals, though: Andrew didn't like "FROM" in all caps (2026-10-10). */
 html[data-gs-builder="on"] .ec-store .gs-b-price {
     flex: none !important;
     font-size: 12px !important;
     font-weight: 700 !important;
-    letter-spacing: 0.06em !important;
-    text-transform: uppercase !important;
     color: var(--gs-b-muted) !important;
 }
 
