@@ -59,6 +59,11 @@
         'orange': '#f25626',
         'red': '#e03e3e'
     };
+    // Basket colours shown as the real basket from above instead of a circle, cut from
+    // Andrew's basket colours photo (2026-10-10). The pictures are set in builder.css; a
+    // colour not listed here keeps its circle.
+    var BASKET_PHOTOS = ['black', 'white', 'transparent', 'blue', 'green', 'pink', 'purple',
+        'orange', 'red', 'turquoise'];
 
     // One tap sets the whole combo. Values are the exact Ecwid choice names; a pick whose
     // values a product doesn't have is left out on that product. Taken from the most
@@ -334,8 +339,14 @@
             button.dataset.value = option.value;
             var chip = el('span');
             var colour = swatchColour(option.value, basket);
-            paintChip(chip, colour);
-            if (!colour) chip.className += ' gs-b-chip--text';
+            var photo = basket && BASKET_PHOTOS.indexOf(option.value.toLowerCase()) !== -1;
+            if (photo) {
+                chip.className = 'gs-b-chip gs-b-chip--basket';
+                chip.setAttribute('data-colour', option.value.toLowerCase());
+            } else {
+                paintChip(chip, colour);
+                if (!colour) chip.className += ' gs-b-chip--text';
+            }
             button.appendChild(chip);
             button.appendChild(el('span', 'gs-b-swatch-name', option.value));
             var price = surchargeIn(option.text);
