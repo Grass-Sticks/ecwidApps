@@ -407,6 +407,27 @@ html[data-gs-builder="on"] .ec-store .gs-b-chip--text {
     background: rgba(170, 200, 210, 0.35) !important;
 }
 
+/* Basket colours: the real basket from above (BASKET_PHOTOS in builder.js), cut from
+   Andrew's basket colours photo at one common scale. */
+html[data-gs-builder="on"] .ec-store .gs-b-chip--basket {
+    width: 48px !important;
+    height: 48px !important;
+    background: center / contain no-repeat !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+html[data-gs-builder="on"] .ec-store .gs-b-chip--basket[data-colour="black"] { background-image: url('builder-photos/basket-colour-black.webp') !important; }
+html[data-gs-builder="on"] .ec-store .gs-b-chip--basket[data-colour="white"] { background-image: url('builder-photos/basket-colour-white.webp') !important; }
+html[data-gs-builder="on"] .ec-store .gs-b-chip--basket[data-colour="transparent"] { background-image: url('builder-photos/basket-colour-transparent.webp') !important; }
+html[data-gs-builder="on"] .ec-store .gs-b-chip--basket[data-colour="blue"] { background-image: url('builder-photos/basket-colour-blue.webp') !important; }
+html[data-gs-builder="on"] .ec-store .gs-b-chip--basket[data-colour="green"] { background-image: url('builder-photos/basket-colour-green.webp') !important; }
+html[data-gs-builder="on"] .ec-store .gs-b-chip--basket[data-colour="pink"] { background-image: url('builder-photos/basket-colour-pink.webp') !important; }
+html[data-gs-builder="on"] .ec-store .gs-b-chip--basket[data-colour="purple"] { background-image: url('builder-photos/basket-colour-purple.webp') !important; }
+html[data-gs-builder="on"] .ec-store .gs-b-chip--basket[data-colour="orange"] { background-image: url('builder-photos/basket-colour-orange.webp') !important; }
+html[data-gs-builder="on"] .ec-store .gs-b-chip--basket[data-colour="red"] { background-image: url('builder-photos/basket-colour-red.webp') !important; }
+html[data-gs-builder="on"] .ec-store .gs-b-chip--basket[data-colour="turquoise"] { background-image: url('builder-photos/basket-colour-turquoise.webp') !important; }
+
 html[data-gs-builder="on"] .ec-store .gs-b-tag {
     position: absolute !important;
     top: -6px !important;
