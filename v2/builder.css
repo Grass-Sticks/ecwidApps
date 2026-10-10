@@ -180,6 +180,17 @@ html[data-gs-builder="on"] .ec-store .gs-b-upcharge {
     font-weight: 700 !important;
 }
 
+/* A price for something not added yet (Engraving's "from +$14"): the same grey tag as the
+   Mtn Straps price above their tiles, so the green badge only ever means "added". */
+html[data-gs-builder="on"] .ec-store .gs-b-price {
+    flex: none !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    color: var(--gs-b-muted) !important;
+}
+
 html[data-gs-builder="on"] .ec-store .gs-b-value--warn {
     color: var(--gs-b-warn) !important;
     font-weight: 600 !important;

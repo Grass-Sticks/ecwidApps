@@ -1068,12 +1068,13 @@
                 // Same look as Cork or a Mtn strap: the choice, then the green price badge
                 // (Andrew, 2026-10-09). The price is grasssticks.js's own "($14)" note.
                 var cost = price ? price.textContent.replace(/[()+\s]/g, '') : '';
-                // With nothing typed, the price is the starting one ("from +$14"), so the
-                // shopper still sees what engraving costs (Andrew, 2026-10-10: "the price is
-                // gone on engraving"). Ecwid's own title, which carried it, is hidden here.
+                // With nothing typed, show the starting price ("from +$14") so the shopper still
+                // sees what engraving costs; Ecwid's own title, which carried it, is hidden here
+                // (Andrew, 2026-10-10). Same grey tag as the Mtn Straps price, not the green
+                // badge: that one marks something already added.
                 setValue(step, done
                     ? [letters + (letters === 1 ? ' letter' : ' letters'), upcharge(cost ? '+' + cost : '')]
-                    : ['Optional', upcharge(cost ? 'from +' + cost : '')]);
+                    : ['Optional', cost ? el('span', 'gs-b-price', 'from +' + cost) : null]);
             }
             step.head.classList.toggle('gs-b-head--done', done);
         });
