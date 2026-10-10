@@ -458,30 +458,35 @@
         return match ? match[1] : '';
     }
 
-    var STRAP_GROUPS = { mtnStrap: 'Mtn Straps · adjustable', NormalStrap: 'Classic beige' };
+    // The plain straps we make ourselves. Every other strap is a Mtn Straps design, so a
+    // new design added in Ecwid lands in the right group with no code change. Grouping
+    // goes by name, not by position, so the choices can sit in any order in Ecwid.
+    var PLAIN_STRAPS = ['Fixed', 'Adjustable', 'None'];
+    // Old divider choices that only ever stood in for headings. Skipped if still present.
+    var STRAP_DIVIDERS = ['mtnStrap', 'NormalStrap'];
 
     function buildStraps(step) {
         var module = moduleOf(step);
         var rows = $all('.form-control--radio', module);
-        var groups = [];
-        var group = null;
+        // Beige first so shoppers see the included strap before the paid upgrades.
+        var plain = { title: 'Classic beige', items: [] };
+        var mtn = { title: 'Mtn Straps · adjustable', items: [] };
+        var groups = [plain, mtn];
         rows.forEach(function (row) {
             var radio = $('input[type="radio"]', row);
-            if (!radio) return;
-            var wrap = $('.form-control__radio-wrap', row);
-            var isHeader = STRAP_GROUPS[radio.value] || (wrap && getComputedStyle(wrap).display === 'none');
-            if (isHeader) {
-                group = { title: STRAP_GROUPS[radio.value] || radio.value, items: [] };
-                groups.push(group);
-                return;
-            }
-            if (!group) { group = { title: '', items: [] }; groups.push(group); }
+            if (!radio || STRAP_DIVIDERS.indexOf(radio.value) >= 0) return;
+            var group = PLAIN_STRAPS.indexOf(radio.value) >= 0 ? plain : mtn;
             var surcharge = $('.option-surcharge__value', row);
             group.items.push({
                 value: radio.value,
                 picture: strapPicture(row),
                 price: surcharge ? surcharge.textContent.trim() : ''
             });
+        });
+
+        // Fixed, Adjustable, None in that order, whatever order Ecwid lists them in.
+        plain.items.sort(function (a, b) {
+            return PLAIN_STRAPS.indexOf(a.value) - PLAIN_STRAPS.indexOf(b.value);
         });
 
         step.strapTiles = [];
