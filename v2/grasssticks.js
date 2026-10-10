@@ -211,7 +211,9 @@ Ecwid.OnAPILoaded.add(function () {
     // same place), so it runs only on the products listed here and only on that photo size.
     // box = left, top, width, height as fractions of the photo. Keys are the exact Strap
     // option value. No pole photo yet for Lone 2, Sacagawea and Fantasia: they keep the
-    // cream strap. The pictures are made with strap-photo-tool/ in Andrew's notes folder.
+    // cream strap. "None" is only the white paint, so the pole shows with no strap at all.
+    // The pictures are made with strap-photo-tool/ in Andrew's notes folder (none.webp by
+    // its make_none.py).
     var STRAP_PHOTO_BASE = 'https://apps.grasssticks.com/strap-photos/';
     var STRAP_PHOTO_PRODUCTS = [865875809];
     var STRAP_PHOTO_SIZE = { width: '3052', height: '6972' };
@@ -226,7 +228,8 @@ Ecwid.OnAPILoaded.add(function () {
         'Spanish Peaks':  { file: 'spanish-peaks.webp', box: [0.51278, 0.03571, 0.2844, 0.14859] },
         'Teton':          { file: 'teton.webp', box: [0.51278, 0.03858, 0.2844, 0.15146] },
         'The Grand':      { file: 'the-grand.webp', box: [0.51278, 0.03815, 0.2844, 0.15333] },
-        'Wasatch Front':  { file: 'wasatch-front.webp', box: [0.51278, 0.04002, 0.29161, 0.1463] }
+        'Wasatch Front':  { file: 'wasatch-front.webp', box: [0.51278, 0.04002, 0.29161, 0.1463] },
+        'None':           { file: 'none.webp', box: [0.51278, 0.04604, 0.2844, 0.09309] }
     };
 
     var currentProductId = null;
